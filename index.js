@@ -7,8 +7,6 @@ const client = new Client({
 
 client.on('ready', () => {
   console.log('🫡A la orden pal desorden.');
-  // Registra los slash commands cuando el bot está listo
-  registerSlashCommands();
 });
 
 client.on('error', (error) => {
