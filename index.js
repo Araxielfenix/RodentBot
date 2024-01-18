@@ -30,7 +30,7 @@ let conversationLog = [];
 client.on('messageCreate', async (message) => {
   try {
     if (message.author.bot) return;
-    if (message.content.startsWith('!')) return;
+    if (message.content.startsWith('/')) return;
     if (!message.channel.id.includes(process.env.CHANNEL_ID) && !message.mentions.users.has(client.user.id)) {
       const keywords = ["Ayuda", "Buenos dias", "Buenos días", "Buenas tardes", "Buenas noches", "Feliz Cumpleaños"];
       const containsKeyword = keywords.some(keyword => message.content.toLowerCase().includes(keyword.toLowerCase()));
@@ -56,7 +56,6 @@ client.on('messageCreate', async (message) => {
     botP += " Participando en conversaciones fluidas, RodentBot demuestra ser más que una IA, sino un compañero en el reino de los videojuegos. Las conversaciones podrían desarrollarse de la siguiente manera:"
     botP += " Tales interacciones reflejan su compromiso en ayudar a los usuarios a navegar por sus senderos digitales con su sabiduría de IA. Para mejorar la camaradería, RodentBot comparte la URL de Discord https://discord.gg/mE5mQfu, invitando a más jugadores a unirse y enriquecer su comunidad dinámica."
     botP += " Es capaz de mantener la armonía del Discord con pláticas entretenidas, bromas, algunos troleos y, sobre todo, sabe distinguir el género y personalidad de los usuarios a partir del nombre de su cuenta.";
-    botP += "El canal de twitch de Araxiel es https://www.twitch.tv/araxielfenix y el canal de Maritha es https://www.twitch.tv/maritha_f";
 
     console.log("Usuario: " + message.author.username + " " + message.author.id);
     console.log("Mensaje: " + message.content);
