@@ -1,6 +1,5 @@
 require('dotenv/config');
-const { Client, GatewayIntentBits, REST } = require('discord.js');
-const { Routes } = require('discord-api-types/v9'); // Agrega esta línea
+const { Client, GatewayIntentBits } = require('discord.js');
 const { OpenAI } = require('openai');
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.DirectMessages, GatewayIntentBits.GuildInvites, GatewayIntentBits.GuildEmojisAndStickers, GatewayIntentBits.GuildMessageReactions],
@@ -16,6 +15,14 @@ client.on('error', (error) => {
   console.error('Discord client error:', error);
 });
 
+client.on("interactionCreate", (interaction) =>{
+  if(interaction.isChatInputCommand()) return;
+
+  if(interaction.commandName === 'ping'){
+    interaction.reply("Pong 🫡");
+  }
+});
+
 const openai = new OpenAI({
   apiKey: process.env.API_KEY,
 })
@@ -25,7 +32,7 @@ let conversationLog = [];
 client.on('messageCreate', async (message) => {
   try {
     if (message.author.bot) return;
-    if (message.content.startsWith('/')) return;
+    if (message.content.startsWith('!')) return;
     if (!message.channel.id.includes(process.env.CHANNEL_ID) && !message.mentions.users.has(client.user.id)) {
       const keywords = ["Ayuda", "Buenos dias", "Buenos días", "Buenas tardes", "Buenas noches", "Feliz Cumpleaños"];
       const containsKeyword = keywords.some(keyword => message.content.toLowerCase().includes(keyword.toLowerCase()));
@@ -51,6 +58,7 @@ client.on('messageCreate', async (message) => {
     botP += " Participando en conversaciones fluidas, RodentBot demuestra ser más que una IA, sino un compañero en el reino de los videojuegos. Las conversaciones podrían desarrollarse de la siguiente manera:"
     botP += " Tales interacciones reflejan su compromiso en ayudar a los usuarios a navegar por sus senderos digitales con su sabiduría de IA. Para mejorar la camaradería, RodentBot comparte la URL de Discord https://discord.gg/mE5mQfu, invitando a más jugadores a unirse y enriquecer su comunidad dinámica."
     botP += " Es capaz de mantener la armonía del Discord con pláticas entretenidas, bromas, algunos troleos y, sobre todo, sabe distinguir el género y personalidad de los usuarios a partir del nombre de su cuenta.";
+    botP += "El canal de twitch de Araxiel es https://www.twitch.tv/araxielfenix y el canal de Maritha es https://www.twitch.tv/maritha_f".
 
     console.log("Usuario: " + message.author.username + " " + message.author.id);
     console.log("Mensaje: " + message.content);
@@ -135,35 +143,5 @@ client.on('messageCreate', async (message) => {
     }
   }
 });
-
-
-// Función para registrar slash commands
-const registerSlashCommands = async () => {
-  try {
-    console.log('Registrando slash commands...');
-
-    const commands = [
-      {
-        name: 'ping',
-        description: 'Responde con Pong!',
-      },
-      // Agrega más comandos según sea necesario
-    ];
-
-    const rest = new REST({ version: '9' }).setToken(process.env.TOKEN);
-
-    // Reemplaza GUILD_ID con el ID de tu servidor
-    const guildId = 'GUILD_ID';
-
-    await rest.put(
-      Routes.applicationGuildCommands(client.user.id, guildId),
-      { body: commands },
-    );
-
-    console.log('Slash commands registrados exitosamente!');
-  } catch (error) {
-    console.error('Error al registrar slash commands:', error);
-  }
-};
 
 client.login(process.env.TOKEN);
