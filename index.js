@@ -31,7 +31,7 @@ client.on('messageCreate', async (message) => {
   try {
     if (message.author.bot) return;
     if (message.content.startsWith('/')) return;
-    if (!message.channel.id.includes(process.env.CHANNEL_ID) && !message.mentions.users.has(client.user.id)) {
+    if (!message.channel.id.includes(process.env.CHANNEL_ID) && !message.mentions.has(client.user)) {
       const keywords = ["Ayuda", "Buenos dias", "Buenos días", "Buenas tardes", "Buenas noches", "Feliz Cumpleaños"];
       const containsKeyword = keywords.some(keyword => message.content.toLowerCase().includes(keyword.toLowerCase()));
       if (!containsKeyword) return;
@@ -71,7 +71,7 @@ client.on('messageCreate', async (message) => {
           }, {
             role: "user",
             content: [
-              { type: "text", text: `${message.author.toString()} dice: ${message.content}` },
+              { type: "text", text: message.author.toString() + " dice: " + message.content },
               {
                 type: "image_url",
                 image_url: {
@@ -85,16 +85,60 @@ client.on('messageCreate', async (message) => {
       });
       console.log(response);
       const image_url = response.choices[0].message.content;
-      message.channel.send({ content: `${message.author.toString()} ${image_url}`, allowedMentions: { parse: [] } });
+      message.reply(image_url);
       message.react("👀");
     } else {
       if (message.content.toLowerCase().includes("imagina") || message.content.toLowerCase().includes("genera")) {
         message.react("🎨");
         const response = await openai.images.generate({
           model: "dall-e-3",
-          prompt: `${message.author.toString()} dice: ${message.content}`,
+          prompt: message.author.toString() + " dice: " + message.content,
           n: 1,
           size: "1024x1024",
         });
         const image_url = response.data.data[0].url;
-       
+        message.reply(image_url);
+      } else {
+        const response = await openai.chat.completions.create({
+          model: "gpt-4-vision-preview",
+          messages: [
+            {
+              role: "assistant",
+              content: botP,
+            }, {
+              role: "user",
+              content: message.author.toString() + " dice: " + message.content,
+            }
+          ],
+          "max_tokens": 500
+        });
+        console.log(response);
+        message.channel.send({ content: response.choices[0].message.content, allowedMentions: { parse: [] } });
+        const userReactions = message.reactions.cache.filter(reaction => reaction.users.cache.has(message.author.id));
+
+        try {
+          for (const reaction of userReactions.values()) {
+            await reaction.users.remove(message.author.id);
+          }
+        } catch (error) {
+          console.error('Failed to remove reactions.');
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    message.reply('¡Ups! Algo salió mal. Intenta de nuevo más tarde.');
+    // Eliminar la reacción
+    const userReactions = message.reactions.cache.filter(reaction => reaction.users.cache.has(message.author.id));
+
+    try {
+      for (const reaction of userReactions.values()) {
+        await reaction.users.remove(message.author.id);
+      }
+    } catch (error) {
+      console.error('Failed to remove reactions.');
+    }
+  }
+});
+
+client.login(process.env.TOKEN);
