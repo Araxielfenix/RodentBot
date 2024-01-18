@@ -1,5 +1,6 @@
 require('dotenv/config');
-const { Client, GatewayIntentBits } = require('discord.js');
+const { Client, GatewayIntentBits, REST } = require('discord.js');
+const { Routes } = require('discord-api-types/v9'); // Agrega esta línea
 const { OpenAI } = require('openai');
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.DirectMessages, GatewayIntentBits.GuildInvites, GatewayIntentBits.GuildEmojisAndStickers, GatewayIntentBits.GuildMessageReactions],
@@ -7,6 +8,8 @@ const client = new Client({
 
 client.on('ready', () => {
   console.log('🫡A la orden pal desorden.');
+  // Registra los slash commands cuando el bot está listo
+  registerSlashCommands();
 });
 
 client.on('error', (error) => {
@@ -132,5 +135,35 @@ client.on('messageCreate', async (message) => {
     }
   }
 });
+
+
+// Función para registrar slash commands
+const registerSlashCommands = async () => {
+  try {
+    console.log('Registrando slash commands...');
+
+    const commands = [
+      {
+        name: 'ping',
+        description: 'Responde con Pong!',
+      },
+      // Agrega más comandos según sea necesario
+    ];
+
+    const rest = new REST({ version: '9' }).setToken(process.env.TOKEN);
+
+    // Reemplaza GUILD_ID con el ID de tu servidor
+    const guildId = 'GUILD_ID';
+
+    await rest.put(
+      Routes.applicationGuildCommands(client.user.id, guildId),
+      { body: commands },
+    );
+
+    console.log('Slash commands registrados exitosamente!');
+  } catch (error) {
+    console.error('Error al registrar slash commands:', error);
+  }
+};
 
 client.login(process.env.TOKEN);
