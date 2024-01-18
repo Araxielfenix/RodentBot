@@ -71,7 +71,7 @@ client.on('messageCreate', async (message) => {
           }, {
             role: "user",
             content: [
-              { type: "text", text: message.author.toString() + " dice: " + message.content },
+              { type: "text", text: `${message.author.toString()} dice: ${message.content}` },
               {
                 type: "image_url",
                 image_url: {
@@ -92,53 +92,9 @@ client.on('messageCreate', async (message) => {
         message.react("🎨");
         const response = await openai.images.generate({
           model: "dall-e-3",
-          prompt: message.author.toString() + " dice: " + message.content,
+          prompt: `${message.author.toString()} dice: ${message.content}`,
           n: 1,
           size: "1024x1024",
         });
         const image_url = response.data.data[0].url;
-        message.channel.send({ content: `${message.author.toString()} ${image_url}`, allowedMentions: { parse: [] } });
-      } else {
-        const response = await openai.chat.completions.create({
-          model: "gpt-4-vision-preview",
-          messages: [
-            {
-              role: "assistant",
-              content: botP,
-            }, {
-              role: "user",
-              content: message.author.toString() + " dice: " + message.content,
-            }
-          ],
-          "max_tokens": 500
-        });
-        console.log(response);
-        const userReactions = message.reactions.cache.filter(reaction => reaction.users.cache.has(message.author.id));
-
-        try {
-          for (const reaction of userReactions.values()) {
-            await reaction.users.remove(message.author.id);
-          }
-        } catch (error) {
-          console.error('Failed to remove reactions.');
-        }
-        message.channel.send({ content: `${message.author.toString()} ${response.choices[0].message.content}`, allowedMentions: { parse: [] } });
-      }
-    }
-  } catch (error) {
-    console.error('Error:', error);
-    message.reply('¡Ups! Algo salió mal. Intenta de nuevo más tarde.');
-    // Eliminar la reacción
-    const userReactions = message.reactions.cache.filter(reaction => reaction.users.cache.has(message.author.id));
-
-    try {
-      for (const reaction of userReactions.values()) {
-        await reaction.users.remove(message.author.id);
-      }
-    } catch (error) {
-      console.error('Failed to remove reactions.');
-    }
-  }
-});
-
-client.login(process.env.TOKEN);
+       
