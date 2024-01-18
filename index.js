@@ -85,7 +85,7 @@ client.on('messageCreate', async (message) => {
       });
       console.log(response);
       const image_url = response.choices[0].message.content;
-      message.channel.send(`${message.author.toString()} ${image_url}`);
+      message.channel.send({ content: `${message.author.toString()} ${image_url}`, allowedMentions: { parse: [] } });
       message.react("👀");
     } else {
       if (message.content.toLowerCase().includes("imagina") || message.content.toLowerCase().includes("genera")) {
@@ -97,7 +97,7 @@ client.on('messageCreate', async (message) => {
           size: "1024x1024",
         });
         const image_url = response.data.data[0].url;
-        message.channel.send(`${message.author.toString()} ${image_url}`);
+        message.channel.send({ content: `${message.author.toString()} ${image_url}`, allowedMentions: { parse: [] } });
       } else {
         const response = await openai.chat.completions.create({
           model: "gpt-4-vision-preview",
@@ -122,7 +122,7 @@ client.on('messageCreate', async (message) => {
         } catch (error) {
           console.error('Failed to remove reactions.');
         }
-        message.channel.send(`${message.author.toString()} ${response.choices[0].message.content}`);
+        message.channel.send({ content: `${message.author.toString()} ${response.choices[0].message.content}`, allowedMentions: { parse: [] } });
       }
     }
   } catch (error) {
