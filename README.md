@@ -9,7 +9,7 @@ A full video tutorial for this chat bot can be found [here](https://youtu.be/CB7
 1. Clone the repository to the current directory
 
 ```powershell
-git clone https://github.com/notunderctrl/gpt-3.5-chat-bot.git .
+[git clone https://github.com/notunderctrl/gpt-3.5-chat-bot.git](https://github.com/Araxielfenix/RodentBot.git) .
 ```
 
 2. Install all the dependencies
