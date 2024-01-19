@@ -1,7 +1,7 @@
 require("dotenv/config");
 const { Client, GatewayIntentBits, ActivityType } = require("discord.js");
 const { OpenAI } = require("openai");
-const { FsReadStream } = require("openai/_shims/auto/types");
+
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -15,6 +15,7 @@ const client = new Client({
 });
 
 client.on("ready", () => {
+  console.log('🫡A la orden pal desorden.');
   client.user.setActivity('🫡A la orden pal desorden.', { type: ActivityType.Custom });
 
   // Configuración del intervalo para ejecutar una acción diaria a las 5PM
