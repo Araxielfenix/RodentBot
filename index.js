@@ -1,6 +1,7 @@
 require("dotenv/config");
-const { Client, GatewayIntentBits } = require("discord.js");
+const { Client, GatewayIntentBits, ActivityType } = require("discord.js");
 const { OpenAI } = require("openai");
+const { FsReadStream } = require("openai/_shims/auto/types");
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -14,7 +15,7 @@ const client = new Client({
 });
 
 client.on("ready", () => {
-  console.log("🫡A la orden pal desorden.\n");
+  client.user.setActivity('🫡A la orden pal desorden.', { type: ActivityType.Custom });
 
   // Configuración del intervalo para ejecutar una acción diaria a las 5PM
   setInterval(async () => {
@@ -103,7 +104,7 @@ client.on("messageCreate", async (message) => {
     });
     
     // Restringir el tamaño de la conversación del usuario a los últimos N mensajes
-    const maxUserConversationSize = 3;
+    const maxUserConversationSize = 4;
     if (userConversation.length > maxUserConversationSize) {
       userConversations.set(message.author.id, userConversation.slice(-maxUserConversationSize));
     } else {
@@ -116,13 +117,15 @@ client.on("messageCreate", async (message) => {
     console.log("Historial de mensajes:", JSON.stringify(contentArray, null, 2));
 
     let botP =
-      "RodentBot (RodentBotId: <@1197231648123654364>) es un inteligente moderador capáz de entablar una conversación natural con los integrantes del discord, es originaria de México y habla todos los idiomas. Sirve como asistente leal en el animado Discord llamado RodentPlay, una bulliciosa comunidad en línea propiedad de los reconocidos streamers mexicanos AraxielFenix (<@146081383838777344>) y Maritha_F (<@718376336326131713>). El androide de confianza es una voz familiar en medio del bullicio y la charla del mundo de los videojuegos.";
+      "RodentBot (RodentBotId: <@1197231648123654364>) es un inteligente moderador capáz de entablar una conversación natural con los integrantes del discord, es originaria de México y nació el 17 de enero del 2024. Sirve como asistente leal en el animado Discord llamado RodentPlay, una bulliciosa comunidad en línea propiedad de los reconocidos streamers mexicanos AraxielFenix (<@146081383838777344>) y Maritha_F (<@718376336326131713>). El androide de confianza es una voz familiar en medio del bullicio y la charla del mundo de los videojuegos.";
     botP +=
       " Participando en conversaciones fluidas, RodentBot demuestra ser más que un compañero en el reino de los videojuegos.";
     botP +=
       " Tales interacciones reflejan su compromiso en ayudar a los usuarios a navegar por sus senderos digitales con su sabiduría de IA. Para mejorar la camaradería, RodentBot comparte la URL de Discord https://discord.gg/mE5mQfu, invitando a más jugadores a unirse y enriquecer su comunidad dinámica.";
     botP +=
       "Es capaz de mantener la armonía del Discord con pláticas entretenidas, bromas, algunos troleos y, sobre todo, sabe distinguir el género y personalidad de los usuarios a partir del nombre de su cuenta.";
+
+    botP += "Es capaz de hacer juegos de palabras o reconocer ciertas referencias en los nombres de los usuarios, por ejemplo si un usuario se llama waluigi_taco, hace alguna broma o referencia a waluigi.";
 
     console.log(
       "Usuario: " + message.author.username + " <@"+ message.author.id  + "> \n",
@@ -153,6 +156,7 @@ client.on("messageCreate", async (message) => {
         ],
         max_tokens: 300,
       });
+      console.log(imagen);
       message.react("👀");
       const image_url = response.choices[0].message.content;
       console.log("Bot: " + response.choices[0].message.content + "\n");
@@ -170,7 +174,30 @@ client.on("messageCreate", async (message) => {
           size: "1024x1024",
         });
         message.react("🎨");
-        const image_url = response.data[0].url;
+        await message.channel.sendTyping();
+        const response2 = await openai.chat.completions.create({
+          model: "gpt-4-vision-preview",
+          messages: [
+            {
+              role: "assistant",
+              content: botP,
+            },
+            {
+              role: "user",
+              content: [
+                { type: "text", text: "Historial de mensajes del usuario: " + JSON.stringify(contentArray, null, 2) + "mensaje a responder: " + message.content + " - " + message.createdAt},
+                {
+                  type: "image_url",
+                  image_url: {
+                    url: response.data[0].url,
+                  },
+                },
+              ],
+            },
+          ],
+          max_tokens: 300,
+        });
+        const image_url = response2.choices[0].message.content + "\n" + response.data[0].url;
         console.log("Bot: " + image_url + "\n");
         message.reply(image_url);
       } else {
