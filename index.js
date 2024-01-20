@@ -125,12 +125,20 @@ client.on("messageCreate", async (message) => {
 
     // Mostrar solo el contenido de cada mensaje
     const sortedMessages = userConversation.sort((a, b) => a.timestamp - b.timestamp);
-    const contentArray = sortedMessages.map((message) => `${message.user}: ${message.content} - ${new Date(message.timestamp).toLocaleTimeString()}`);
+    const contentArray = sortedMessages.map((message) => {
+      const timestamp = new Date(message.timestamp);
+      const formattedTimestamp = timestamp.toLocaleString('es-MX', {
+        timeZone: 'America/Mexico_City', // Puedes cambiar 'America/Mexico_City' por la zona horaria deseada
+        hour12: true, // Si deseas usar formato de 24 horas
+      });
+      return `${message.content} - ${formattedTimestamp}`;
+    });
+
 
     console.log(
       "Usuario: " + message.author.username + " <@"+ message.author.id  + "> \n",
     );
-    console.log("Mensaje: " + message.content + " - " + message.createdAt.toLocaleString() + "\n");
+    console.log("Mensaje: " + message.content + "\n");
     
     let imagen = message.attachments.first();
     if (imagen && imagen.url) {
@@ -144,7 +152,7 @@ client.on("messageCreate", async (message) => {
           {
             role: "user",
             content: [
-              { type: "text", text: "Historial de mensajes del usuario " + message.author.username + ": " + JSON.stringify(contentArray, null, 2) + "mensaje a responder: " + message.content + " - " + message.createdAt},
+              { type: "text", text: "Historial de mensajes del usuario " + message.author.username + ": " + JSON.stringify(contentArray, null, 2) + "mensaje que debes responder: " + message.content},
               {
                 type: "image_url",
                 image_url: {
@@ -169,7 +177,7 @@ client.on("messageCreate", async (message) => {
       ) {
         const response = await openai.images.generate({
           model: "dall-e-3",
-          prompt: "Historial de mensajes del usuario " + message.author.username + ": " + JSON.stringify(contentArray, null, 2) + "mensaje a responder: " + message.content + " - " + message.createdAt,
+          prompt: "Historial de mensajes del usuario " + message.author.username + ": " + JSON.stringify(contentArray, null, 2) + "mensaje que debes responder: " + message.content,
           n: 1,
           size: "1024x1024",
         });
@@ -185,7 +193,7 @@ client.on("messageCreate", async (message) => {
             {
               role: "user",
               content: [
-                { type: "text", text: "Historial de mensajes del usuario " + message.author.username + ": " + JSON.stringify(contentArray, null, 2) + "mensaje a responder: " + message.content + " - " + message.createdAt},
+                { type: "text", text: "Historial de mensajes del usuario " + message.author.username + ": " + JSON.stringify(contentArray, null, 2) + "mensaje que debes responder: " + message.content},
                 {
                   type: "image_url",
                   image_url: {
@@ -210,13 +218,15 @@ client.on("messageCreate", async (message) => {
             },
             {
               role: "user",
-              content: "Historial de mensajes del usuario " + message.author.username + ": " + JSON.stringify(contentArray, null, 2) + "mensaje a responder: " + message.content + " - " + message.createdAt,
+              content: "Historial de mensajes del usuario " + message.author.username + ": " + JSON.stringify(contentArray, null, 2) + "mensaje que debes responder: " + message.content,
             },
           ],
           max_tokens: 500,
         });
         console.log("Bot: " + response.choices[0].message.content + "\n");
+        
         console.log("Historial de mensajes del usuario " + message.author.username + ": " + JSON.stringify(contentArray, null, 2));
+        
         message.channel.send({
           content: response.choices[0].message.content,
           allowedMentions: { parse: [] },
