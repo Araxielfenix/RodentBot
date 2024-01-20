@@ -26,7 +26,7 @@ client.on("ready", () => {
     console.log(horaActual);
     
     // Verificar si es la hora programada (17:00 en formato de 24 horas)
-    if (horaActual === 6) {
+    if (horaActual % 6 === 0) {
       // Mensaje prompt para generación automática
       const prompt = "Eres un moderador del Discord RodentPlay, estas inspirado escribiendo un mensaje para activar las conversaciones acerca de videojuegos para que los usuarios de este discord participen en el chat.";
 
@@ -53,7 +53,7 @@ client.on("ready", () => {
         canal.send(response.choices[0].message.content);
       }
     }
-  }, 3600000); // Intervalo de un minuto (ajusta según sea necesario)
+  }, 6 * 3600000); // Intervalo de un minuto (ajusta según sea necesario)
   
 });
 
