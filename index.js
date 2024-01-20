@@ -29,6 +29,10 @@ client.on("ready", () => {
 
   // Configuración del intervalo para ejecutar una acción cada 6 horas
   setInterval(async () => {
+    // Enviar el mensaje generado al canal deseado (reemplaza CHANNEL_ID con el ID correcto)
+    const canal = client.channels.cache.get(process.env.GENERAL_ID);
+    await canal.sendTyping();
+    
       // Mensaje prompt para generación automática (se puede variar)
       const prompt = "Eres un moderador del Discord RodentPlay, estas inspirado escribiendo un mensaje para activar las conversaciones acerca de videojuegos para que los usuarios de este discord participen en el chat y compartan sus gustos en videojuegos y sus logros mas grandes en estos juegos, el mensaje debe contener un maximo de 4 renglones.";
 
@@ -48,14 +52,41 @@ client.on("ready", () => {
         max_tokens: 200,
       });
 
-      // Enviar el mensaje generado al canal deseado (reemplaza CHANNEL_ID con el ID correcto)
-      const canal = client.channels.cache.get(process.env.GENERAL_ID);
-      await canal.sendTyping();
-
       if (canal) {
         canal.send(response.choices[0].message.content);
       }
   }, 21600000); // Intervalo de 6 horas
+});
+
+// Configuración del evento guildMemberAdd
+client.on("guildMemberAdd", async (member) => {
+  // Canal donde quieres enviar el mensaje de bienvenida
+  const canal = client.channels.cache.get(process.env.GENERAL_ID);
+  await canal.sendTyping();
+
+  if (canal) {
+    // Mensaje prompt para generación automática
+    const prompt = `Un nuevo miembro se ha unido al servidor. ¡Bienvenido, ${member.user.tag}!`;
+
+    // Utilizar OpenAI para generar un mensaje automático
+    const response = await openai.chat.completions.create({
+      model: "gpt-4-vision-preview",
+      messages: [
+        {
+          role: "assistant",
+          content: botP,
+        },
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+      max_tokens: 150,
+    });
+
+    // Enviar el mensaje generado al canal de bienvenida
+    canal.send(response.choices[0].message.content);
+  }
 });
 
 client.on("error", (error) => {
