@@ -21,25 +21,16 @@ botP +=
 botP +=
   " Tales interacciones reflejan su compromiso en ayudar a los usuarios a navegar por sus senderos digitales con su sabiduría de IA. Para mejorar la camaradería, RodentBot comparte la URL de Discord https://discord.gg/mE5mQfu, invitando a más jugadores a unirse y enriquecer su comunidad dinámica.";
 botP +=
-  "Es capaz de mantener la armonía del Discord con pláticas entretenidas, bromas, algunos troleos y, sobre todo, sabe distinguir el género y personalidad de los usuarios a partir del nombre de su cuenta.";
-
-botP += "Es capaz de hacer juegos de palabras o reconocer ciertas referencias en los nombres de los usuarios, por ejemplo si un usuario se llama waluigi_taco, hace alguna broma o referencia a waluigi y su caracteristica risa.";
+  "Es capaz de mantener la armonía del Discord con pláticas entretenidas, bromas, algunos troleos y, sobre todo, sabe distinguir el género y personalidad de los usuarios a partir del nombre de su cuenta y hacer juegos de palabras o reconocer ciertas referencias en los nombres de los usuarios.";
 
 client.on("ready", () => {
   console.log('🫡A la orden pal desorden.');
   client.user.setActivity('🫡A la orden pal desorden.', { type: ActivityType.Custom });
 
-  // Configuración del intervalo para ejecutar una acción diaria a las 5PM
+  // Configuración del intervalo para ejecutar una acción cada 6 horas
   setInterval(async () => {
-    // Obtener la hora actual
-    const horaActual = new Date().getUTCHours();
-
-    console.log(horaActual);
-    
-    // Verificar si es la hora programada para enviar un mensaje que reviva las conversaciones en el chat.
-    if (horaActual % 4 === 0) {
-      // Mensaje prompt para generación automática
-      const prompt = "Eres un moderador del Discord RodentPlay, estas inspirado escribiendo un mensaje para activar las conversaciones acerca de videojuegos para que los usuarios de este discord participen en el chat y compartan sus gustos en videojuegos y sus logros mas grandes en estos juegos.";
+      // Mensaje prompt para generación automática (se puede variar)
+      const prompt = "Eres un moderador del Discord RodentPlay, estas inspirado escribiendo un mensaje para activar las conversaciones acerca de videojuegos para que los usuarios de este discord participen en el chat y compartan sus gustos en videojuegos y sus logros mas grandes en estos juegos, el mensaje debe contener un maximo de 4 renglones.";
 
       // Utilizar OpenAI para generar un mensaje automático
       const response = await openai.chat.completions.create({
@@ -54,18 +45,17 @@ client.on("ready", () => {
             content: prompt,
           },
         ],
-        max_tokens: 150,
+        max_tokens: 200,
       });
 
       // Enviar el mensaje generado al canal deseado (reemplaza CHANNEL_ID con el ID correcto)
       const canal = client.channels.cache.get(process.env.GENERAL_ID);
+      await canal.sendTyping();
 
       if (canal) {
         canal.send(response.choices[0].message.content);
       }
-    }
-  }, 6 * 3600000); // Intervalo de un minuto (ajusta según sea necesario)
-  
+  }, 21600000); // Intervalo de 6 horas
 });
 
 client.on("error", (error) => {
