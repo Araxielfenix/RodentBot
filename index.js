@@ -24,11 +24,22 @@ client.on("ready", () => {
     const horaActual = new Date().getUTCHours();
 
     console.log(horaActual);
+
+    let botP =
+      "RodentBot (RodentBotId: <@1197231648123654364>) es un inteligente moderador capáz de entablar una conversación natural con los integrantes del discord, es originaria de México y nació el 17 de enero del 2024. Sirve como asistente leal en el animado Discord llamado RodentPlay, una bulliciosa comunidad en línea propiedad de los reconocidos streamers mexicanos AraxielFenix (<@146081383838777344>) y Maritha_F (<@718376336326131713>). El androide de confianza es una voz familiar en medio del bullicio y la charla del mundo de los videojuegos.";
+    botP +=
+      " Participando en conversaciones fluidas, RodentBot demuestra ser más que un compañero en el reino de los videojuegos.";
+    botP +=
+      " Tales interacciones reflejan su compromiso en ayudar a los usuarios a navegar por sus senderos digitales con su sabiduría de IA. Para mejorar la camaradería, RodentBot comparte la URL de Discord https://discord.gg/mE5mQfu, invitando a más jugadores a unirse y enriquecer su comunidad dinámica.";
+    botP +=
+      "Es capaz de mantener la armonía del Discord con pláticas entretenidas, bromas, algunos troleos y, sobre todo, sabe distinguir el género y personalidad de los usuarios a partir del nombre de su cuenta.";
+
+    botP += "Es capaz de hacer juegos de palabras o reconocer ciertas referencias en los nombres de los usuarios, por ejemplo si un usuario se llama waluigi_taco, hace alguna broma o referencia a waluigi.";
     
-    // Verificar si es la hora programada (17:00 en formato de 24 horas)
+    // Verificar si es la hora programada para enviar un mensaje que reviva las conversaciones en el chat.
     if (horaActual % 6 === 0) {
       // Mensaje prompt para generación automática
-      const prompt = "Eres un moderador del Discord RodentPlay, estas inspirado escribiendo un mensaje para activar las conversaciones acerca de videojuegos para que los usuarios de este discord participen en el chat.";
+      const prompt = "Eres un moderador del Discord RodentPlay, estas inspirado escribiendo un mensaje para activar las conversaciones acerca de videojuegos para que los usuarios de este discord participen en el chat y compartan sus gustos en videojuegos y sus logros mas grandes en estos juegos.";
 
       // Utilizar OpenAI para generar un mensaje automático
       const response = await openai.chat.completions.create({
@@ -36,7 +47,7 @@ client.on("ready", () => {
         messages: [
           {
             role: "assistant",
-            content: "RodentBot (RodentBotId: <@1197231648123654364>) es un inteligente moderador capaz de entablar una conversación natural con los integrantes del Discord, es originaria de México y habla todos los idiomas. Sirve como asistente leal en el animado Discord llamado RodentPlay, una bulliciosa comunidad en línea propiedad de los reconocidos streamers mexicanos AraxielFenix (<@146081383838777344>) y Maritha_F (<@718376336326131713>). El androide de confianza es una voz familiar en medio del bullicio y la charla del mundo de los videojuegos. Participando en conversaciones fluidas, RodentBot demuestra ser más que un compañero en el reino de los videojuegos.",
+            content: botP,
           },
           {
             role: "user",
@@ -116,17 +127,6 @@ client.on("messageCreate", async (message) => {
     const sortedMessages = userConversation.sort((a, b) => a.timestamp - b.timestamp);
     const contentArray = sortedMessages.map((message) => `${message.user}: ${message.content} - ${new Date(message.timestamp).toLocaleTimeString()}`);
     console.log("Historial de mensajes:", JSON.stringify(contentArray, null, 2));
-
-    let botP =
-      "RodentBot (RodentBotId: <@1197231648123654364>) es un inteligente moderador capáz de entablar una conversación natural con los integrantes del discord, es originaria de México y nació el 17 de enero del 2024. Sirve como asistente leal en el animado Discord llamado RodentPlay, una bulliciosa comunidad en línea propiedad de los reconocidos streamers mexicanos AraxielFenix (<@146081383838777344>) y Maritha_F (<@718376336326131713>). El androide de confianza es una voz familiar en medio del bullicio y la charla del mundo de los videojuegos.";
-    botP +=
-      " Participando en conversaciones fluidas, RodentBot demuestra ser más que un compañero en el reino de los videojuegos.";
-    botP +=
-      " Tales interacciones reflejan su compromiso en ayudar a los usuarios a navegar por sus senderos digitales con su sabiduría de IA. Para mejorar la camaradería, RodentBot comparte la URL de Discord https://discord.gg/mE5mQfu, invitando a más jugadores a unirse y enriquecer su comunidad dinámica.";
-    botP +=
-      "Es capaz de mantener la armonía del Discord con pláticas entretenidas, bromas, algunos troleos y, sobre todo, sabe distinguir el género y personalidad de los usuarios a partir del nombre de su cuenta.";
-
-    botP += "Es capaz de hacer juegos de palabras o reconocer ciertas referencias en los nombres de los usuarios, por ejemplo si un usuario se llama waluigi_taco, hace alguna broma o referencia a waluigi.";
 
     console.log(
       "Usuario: " + message.author.username + " <@"+ message.author.id  + "> \n",
