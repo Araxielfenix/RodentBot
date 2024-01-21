@@ -1,6 +1,16 @@
 require("dotenv/config");
-const { Client, GatewayIntentBits, ActivityType } = require("discord.js");
+const { Client, GatewayIntentBits, ActivityType, Partials } = require("discord.js");
 const { OpenAI } = require("openai");
+
+module.exports = {
+  data: {
+    name: "ping",
+    description: "bot status",
+  },
+  run: async ({ interaction }) => {
+    await interaction.reply("pong");
+  }
+}
 
 const client = new Client({
   intents: [
@@ -11,8 +21,17 @@ const client = new Client({
     GatewayIntentBits.GuildInvites,
     GatewayIntentBits.GuildEmojisAndStickers,
     GatewayIntentBits.GuildMessageReactions,
+    GatewayIntentBits.DirectMessageTyping,
+    GatewayIntentBits.GuildScheduledEvents
   ],
+  partials: [Partials.GuildMember],
 });
+
+const openai = new OpenAI({
+  apiKey: process.env.API_KEY,
+});
+
+
 
 var botP =
   "RodentBot (RodentBotId: <@1197231648123654364>) es un inteligente moderador capáz de entablar una conversación natural con los integrantes del discord, es originaria de México y nació el 17 de enero del 2024. Sirve como asistente leal en el animado Discord llamado RodentPlay, una bulliciosa comunidad en línea propiedad de los reconocidos streamers mexicanos AraxielFenix (<@146081383838777344>) y Maritha_F (<@718376336326131713>). El androide de confianza es una voz familiar en medio del bullicio y la charla del mundo de los videojuegos.";
@@ -21,14 +40,16 @@ botP +=
 botP +=
   " Tales interacciones reflejan su compromiso en ayudar a los usuarios a navegar por sus senderos digitales con su sabiduría de IA. Para mejorar la camaradería, RodentBot comparte la URL de Discord https://discord.gg/mE5mQfu, invitando a más jugadores a unirse y enriquecer su comunidad dinámica.";
 botP +=
-  "Es capaz de mantener la armonía del Discord con pláticas entretenidas, bromas, algunos troleos y, sobre todo, sabe distinguir el género y personalidad de los usuarios a partir del nombre de su cuenta y hacer juegos de palabras o reconocer ciertas referencias en los nombres de los usuarios.";
+  "Es capaz de mantener la armonía del Discord con pláticas entretenidas, usando emojis, bromas, algunos troleos y, sobre todo, sabe distinguir el género y personalidad de los usuarios a partir del nombre de su cuenta, asi como hacer juegos de palabras o reconocer ciertas referencias en los nombres de los usuarios.";
+
+let timer = 0;
 
 client.on("ready", () => {
   console.log('🫡A la orden pal desorden.');
   client.user.setActivity('🫡A la orden pal desorden.', { type: ActivityType.Custom });
-
   // Configuración del intervalo para ejecutar una acción cada 6 horas
   setInterval(async () => {
+    timer ++;
     // Enviar el mensaje generado al canal deseado (reemplaza CHANNEL_ID con el ID correcto)
     const canal = client.channels.cache.get(process.env.GENERAL_ID);
     await canal.sendTyping();
@@ -53,48 +74,54 @@ client.on("ready", () => {
       });
 
       if (canal) {
-        canal.send(response.choices[0].message.content);
+        // Agregar la mención @everyone al mensaje
+        const mensajeConMencionEveryone = `@everyone ${response.choices[0].message.content}`;
+
+        canal.send(mensajeConMencionEveryone);
       }
   }, 21600000); // Intervalo de 6 horas
 });
 
 // Configuración del evento guildMemberAdd
-client.on("guildMemberAdd", async (member) => {
-  // Canal donde quieres enviar el mensaje de bienvenida
-  const canal = client.channels.cache.get(process.env.GENERAL_ID);
-  await canal.sendTyping();
+client.on("messageCreate", async (member) => {
+  if(member.author.username === "RodentBot") return;
+  try {
+    console.log(member.type);
+    message.react(":Love:");
+    // Canal donde quieres enviar el mensaje de bienvenida
+    const canal = client.channels.cache.get(process.env.GENERAL_ID);
+    await canal.sendTyping();
+    if (member.type === 7) {
+      // Mensaje prompt para generación automática
+      const prompt = `Un nuevo miembro se ha unido al servidor. Dale una valida bienvenida a  @${member.author.username}!`;
 
-  if (canal) {
-    // Mensaje prompt para generación automática
-    const prompt = `Un nuevo miembro se ha unido al servidor. ¡Bienvenido, ${member.user.tag}!`;
+      // Utilizar OpenAI para generar un mensaje automático
+      const response = await openai.chat.completions.create({
+        model: "gpt-4-vision-preview",
+        messages: [
+          {
+            role: "assistant",
+            content: botP,
+          },
+          {
+            role: "user",
+            content: prompt,
+          },
+        ],
+        max_tokens: 150,
+      });
 
-    // Utilizar OpenAI para generar un mensaje automático
-    const response = await openai.chat.completions.create({
-      model: "gpt-4-vision-preview",
-      messages: [
-        {
-          role: "assistant",
-          content: botP,
-        },
-        {
-          role: "user",
-          content: prompt,
-        },
-      ],
-      max_tokens: 150,
-    });
-
-    // Enviar el mensaje generado al canal de bienvenida
-    canal.send(response.choices[0].message.content);
+      // Enviar el mensaje generado al canal de bienvenida
+      canal.send(response.choices[0].message.content);
+    }
+  } catch (error) {
+    console.error("Error en el manejo de mensajes:", error);
   }
 });
 
+
 client.on("error", (error) => {
   console.error("Discord client error:", error);
-});
-
-const openai = new OpenAI({
-  apiKey: process.env.API_KEY,
 });
 
 // Utilizamos userConversations para almacenar el historial de mensajes de cada usuario
@@ -104,9 +131,12 @@ client.on("messageCreate", async (message) => {
   try {
     if (message.author.bot) return;
     if (message.content.startsWith("/")) return;
+    if(message.author.username === "RodentBot") return;
     if (
       !message.channel.id.includes(process.env.CHANNEL_ID) &&
-      !message.mentions.has(client.user)
+      !message.mentions.has(client.user) &&
+      !message.channel.id.includes("1094473900181704867") &&
+      message.channel.type === 'DM'
     ) {
       const keywords = [
         "Ayuda",
@@ -115,6 +145,11 @@ client.on("messageCreate", async (message) => {
         "Buenas tardes",
         "Buenas noches",
         "Feliz Cumpleaños",
+        "F",
+        "efe",
+        "Efisima",
+        "Efesota",
+        "nunchu2NunchuF",
       ];
       const containsKeyword = keywords.some((keyword) =>
         message.content.toLowerCase().includes(keyword.toLowerCase()),
