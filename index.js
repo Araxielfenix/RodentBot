@@ -1,5 +1,5 @@
 require("dotenv/config");
-const { Client, GatewayIntentBits, ActivityType, Partials } = require("discord.js");
+const { Client, GatewayIntentBits, ActivityType, Partials, GuildMember } = require("discord.js");
 const { OpenAI } = require("openai");
 
 module.exports = {
@@ -15,6 +15,7 @@ module.exports = {
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMembers,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
     GatewayIntentBits.DirectMessages,
@@ -31,10 +32,8 @@ const openai = new OpenAI({
   apiKey: process.env.API_KEY,
 });
 
-
-
 var botP =
-  "RodentBot (RodentBotId: <@1197231648123654364>) es un inteligente moderador capáz de entablar una conversación natural con los integrantes del discord, es originaria de México y nació el 17 de enero del 2024. Sirve como asistente leal en el animado Discord llamado RodentPlay, una bulliciosa comunidad en línea propiedad de los reconocidos streamers mexicanos AraxielFenix (<@146081383838777344>) y Maritha_F (<@718376336326131713>). El androide de confianza es una voz familiar en medio del bullicio y la charla del mundo de los videojuegos.";
+  "RodentBot (RodentBotId: <@1197231648123654364>) es un inteligente moderador capáz de entablar una conversación natural con los integrantes del discord, es originario de México y nació el 17 de enero del 2024. Sirve como asistente leal en el animado Discord llamado RodentPlay, una bulliciosa comunidad en línea propiedad de los reconocidos streamers mexicanos AraxielFenix (<@146081383838777344>) y Maritha_F (<@718376336326131713>). El androide de confianza es una voz familiar en medio del bullicio y la charla del mundo de los videojuegos.";
 botP +=
   " Participando en conversaciones fluidas, RodentBot demuestra ser más que un compañero en el reino de los videojuegos.";
 botP +=
@@ -83,17 +82,15 @@ client.on("ready", () => {
 });
 
 // Configuración del evento guildMemberAdd
-client.on("messageCreate", async (member) => {
-  if(member.author.username === "RodentBot") return;
+client.on("guildMemberAdd", async (member) => {
+  //if(member.author.username === "RodentBot") return;
   try {
-    console.log(member.type);
-    message.react(":Love:");
+    console.log(member);
     // Canal donde quieres enviar el mensaje de bienvenida
     const canal = client.channels.cache.get(process.env.GENERAL_ID);
     await canal.sendTyping();
-    if (member.type === 7) {
       // Mensaje prompt para generación automática
-      const prompt = `Un nuevo miembro se ha unido al servidor. Dale una valida bienvenida a  @${member.author.username}!`;
+      const prompt = `Un nuevo miembro se ha unido al servidor. Dale una valida bienvenida a  @${member.user.username}! La bienvenida no debe ser mayor a 4 renglones.`;
 
       // Utilizar OpenAI para generar un mensaje automático
       const response = await openai.chat.completions.create({
@@ -108,17 +105,15 @@ client.on("messageCreate", async (member) => {
             content: prompt,
           },
         ],
-        max_tokens: 150,
+        max_tokens: 200,
       });
 
       // Enviar el mensaje generado al canal de bienvenida
       canal.send(response.choices[0].message.content);
-    }
   } catch (error) {
     console.error("Error en el manejo de mensajes:", error);
   }
 });
-
 
 client.on("error", (error) => {
   console.error("Discord client error:", error);
@@ -135,8 +130,7 @@ client.on("messageCreate", async (message) => {
     if (
       !message.channel.id.includes(process.env.CHANNEL_ID) &&
       !message.mentions.has(client.user) &&
-      !message.channel.id.includes("1094473900181704867") &&
-      message.channel.type === 'DM'
+      !message.channel.id.includes("1094473900181704867")
     ) {
       const keywords = [
         "Ayuda",
@@ -189,7 +183,6 @@ client.on("messageCreate", async (message) => {
       });
       return `${message.content} - ${formattedTimestamp}`;
     });
-
 
     console.log(
       "Usuario: " + message.author.username + " <@"+ message.author.id  + "> \n",
