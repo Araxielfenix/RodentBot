@@ -1,5 +1,11 @@
 require("dotenv/config");
-const { Client, GatewayIntentBits, ActivityType, Partials, GuildMember } = require("discord.js");
+const {
+  Client,
+  GatewayIntentBits,
+  ActivityType,
+  Partials,
+  EmbedBuilder,
+} = require("discord.js");
 const { OpenAI } = require("openai");
 
 module.exports = {
@@ -9,8 +15,8 @@ module.exports = {
   },
   run: async ({ interaction }) => {
     await interaction.reply("pong");
-  }
-}
+  },
+};
 
 const client = new Client({
   intents: [
@@ -23,7 +29,7 @@ const client = new Client({
     GatewayIntentBits.GuildEmojisAndStickers,
     GatewayIntentBits.GuildMessageReactions,
     GatewayIntentBits.DirectMessageTyping,
-    GatewayIntentBits.GuildScheduledEvents
+    GatewayIntentBits.GuildScheduledEvents,
   ],
   partials: [Partials.GuildMember],
 });
@@ -44,40 +50,43 @@ botP +=
 let timer = 0;
 
 client.on("ready", () => {
-  console.log('🫡A la orden pal desorden.');
-  client.user.setActivity('🫡A la orden pal desorden.', { type: ActivityType.Custom });
+  console.log("🫡A la orden pal desorden.");
+  client.user.setActivity("🫡A la orden pal desorden.", {
+    type: ActivityType.Custom,
+  });
   // Configuración del intervalo para ejecutar una acción cada 6 horas
   setInterval(async () => {
-    timer ++;
+    timer++;
     // Enviar el mensaje generado al canal deseado (reemplaza CHANNEL_ID con el ID correcto)
     const canal = client.channels.cache.get(process.env.GENERAL_ID);
     await canal.sendTyping();
-    
-      // Mensaje prompt para generación automática (se puede variar)
-      const prompt = "Eres un moderador del Discord RodentPlay, estas inspirado escribiendo un mensaje para activar las conversaciones acerca de videojuegos para que los usuarios de este discord participen en el chat y compartan sus gustos en videojuegos y sus logros mas grandes en estos juegos, el mensaje debe contener un maximo de 4 renglones.";
 
-      // Utilizar OpenAI para generar un mensaje automático
-      const response = await openai.chat.completions.create({
-        model: "gpt-4-vision-preview",
-        messages: [
-          {
-            role: "assistant",
-            content: botP,
-          },
-          {
-            role: "user",
-            content: prompt,
-          },
-        ],
-        max_tokens: 200,
+    // Mensaje prompt para generación automática (se puede variar)
+    const prompt =
+      "Eres un moderador del Discord RodentPlay, estas inspirado escribiendo un mensaje para activar las conversaciones acerca de videojuegos para que los usuarios de este discord participen en el chat y compartan sus gustos en videojuegos y sus logros mas grandes en estos juegos, el mensaje debe contener un maximo de 4 renglones y debes mencionar a todos utilizando @everyone.";
+
+    // Utilizar OpenAI para generar un mensaje automático
+    const response = await openai.chat.completions.create({
+      model: "gpt-4-vision-preview",
+      messages: [
+        {
+          role: "assistant",
+          content: botP,
+        },
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+      max_tokens: 200,
+    });
+
+    if (canal) {
+      canal.send({
+        content: response.choices[0].message.content,
+        allowedMentions: { parse: [] },
       });
-
-      if (canal) {
-        // Agregar la mención @everyone al mensaje
-        const mensajeConMencionEveryone = `@everyone ${response.choices[0].message.content}`;
-
-        canal.send(mensajeConMencionEveryone);
-      }
+    }
   }, 21600000); // Intervalo de 6 horas
 });
 
@@ -89,27 +98,31 @@ client.on("guildMemberAdd", async (member) => {
     // Canal donde quieres enviar el mensaje de bienvenida
     const canal = client.channels.cache.get(process.env.GENERAL_ID);
     await canal.sendTyping();
-      // Mensaje prompt para generación automática
-      const prompt = `Un nuevo miembro se ha unido al servidor. Dale una valida bienvenida a  @${member.user.username}! La bienvenida no debe ser mayor a 4 renglones.`;
+    // Mensaje prompt para generación automática
+    const prompt = `Un nuevo miembro se ha unido al servidor. Dale una valida bienvenida a  @${member.user.username}! La bienvenida no debe ser mayor a 4 renglones.`;
 
-      // Utilizar OpenAI para generar un mensaje automático
-      const response = await openai.chat.completions.create({
-        model: "gpt-4-vision-preview",
-        messages: [
-          {
-            role: "assistant",
-            content: botP,
-          },
-          {
-            role: "user",
-            content: prompt,
-          },
-        ],
-        max_tokens: 200,
-      });
+    // Utilizar OpenAI para generar un mensaje automático
+    const response = await openai.chat.completions.create({
+      model: "gpt-4-vision-preview",
+      messages: [
+        {
+          role: "assistant",
+          content: botP,
+        },
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+      max_tokens: 200,
+    });
 
-      // Enviar el mensaje generado al canal de bienvenida
-      canal.send(response.choices[0].message.content);
+    // Enviar el mensaje generado al canal de bienvenida
+    canal.send({
+      content: response.choices[0].message.content,
+      allowedMentions: { parse: [] },
+    });
+    
   } catch (error) {
     console.error("Error en el manejo de mensajes:", error);
   }
@@ -126,7 +139,7 @@ client.on("messageCreate", async (message) => {
   try {
     if (message.author.bot) return;
     if (message.content.startsWith("/")) return;
-    if(message.author.username === "RodentBot") return;
+    if (message.author.username === "RodentBot") return;
     if (
       !message.channel.id.includes(process.env.CHANNEL_ID) &&
       !message.mentions.has(client.user) &&
@@ -158,37 +171,48 @@ client.on("messageCreate", async (message) => {
 
     // Almacenar el historial después de generar la respuesta
     userConversation.push({
-      role: 'user',
+      role: "user",
       content: message.content,
-      name: message.author.username.replace(/\s+/g, '_').replace(/[^\w\s]/gi, ''),
+      name: message.author.username
+        .replace(/\s+/g, "_")
+        .replace(/[^\w\s]/gi, ""),
       user: message.author.username,
       timestamp: message.createdTimestamp,
     });
-    
+
     // Restringir el tamaño de la conversación del usuario a los últimos N mensajes
     const maxUserConversationSize = 4;
     if (userConversation.length > maxUserConversationSize) {
-      userConversations.set(message.author.id, userConversation.slice(-maxUserConversationSize));
+      userConversations.set(
+        message.author.id,
+        userConversation.slice(-maxUserConversationSize),
+      );
     } else {
       userConversations.set(message.author.id, userConversation);
     }
 
     // Mostrar solo el contenido de cada mensaje
-    const sortedMessages = userConversation.sort((a, b) => a.timestamp - b.timestamp);
+    const sortedMessages = userConversation.sort(
+      (a, b) => a.timestamp - b.timestamp,
+    );
     const contentArray = sortedMessages.map((message) => {
       const timestamp = new Date(message.timestamp);
-      const formattedTimestamp = timestamp.toLocaleString('es-MX', {
-        timeZone: 'America/Mexico_City', // Puedes cambiar 'America/Mexico_City' por la zona horaria deseada
+      const formattedTimestamp = timestamp.toLocaleString("es-MX", {
+        timeZone: "America/Mexico_City", // Puedes cambiar 'America/Mexico_City' por la zona horaria deseada
         hour12: true, // Si deseas usar formato de 24 horas
       });
       return `${message.content} - ${formattedTimestamp}`;
     });
 
     console.log(
-      "Usuario: " + message.author.username + " <@"+ message.author.id  + "> \n",
+      "Usuario: " +
+        message.author.username +
+        " <@" +
+        message.author.id +
+        "> \n",
     );
     console.log("Mensaje: " + message.content + "\n");
-    
+
     let imagen = message.attachments.first();
     if (imagen && imagen.url) {
       const response = await openai.chat.completions.create({
@@ -201,7 +225,16 @@ client.on("messageCreate", async (message) => {
           {
             role: "user",
             content: [
-              { type: "text", text: "Historial de mensajes del usuario " + message.author.username + ": " + JSON.stringify(contentArray, null, 2) + "mensaje que debes responder: " + message.content},
+              {
+                type: "text",
+                text:
+                  "Historial de mensajes del usuario " +
+                  message.author.username +
+                  ": " +
+                  JSON.stringify(contentArray, null, 2) +
+                  "mensaje que debes responder: " +
+                  message.content,
+              },
               {
                 type: "image_url",
                 image_url: {
@@ -221,12 +254,18 @@ client.on("messageCreate", async (message) => {
     } else {
       if (
         message.content.toLowerCase().includes("imagina") ||
-        message.content.toLowerCase().includes("genera")  ||
+        message.content.toLowerCase().includes("genera") ||
         message.content.toLowerCase().includes("dibuja")
       ) {
         const response = await openai.images.generate({
           model: "dall-e-3",
-          prompt: "Historial de mensajes del usuario " + message.author.username + ": " + JSON.stringify(contentArray, null, 2) + "mensaje que debes responder: " + message.content,
+          prompt:
+            "Historial de mensajes del usuario " +
+            message.author.username +
+            ": " +
+            JSON.stringify(contentArray, null, 2) +
+            "mensaje que debes responder: " +
+            message.content,
           n: 1,
           size: "1024x1024",
         });
@@ -242,7 +281,16 @@ client.on("messageCreate", async (message) => {
             {
               role: "user",
               content: [
-                { type: "text", text: "Historial de mensajes del usuario " + message.author.username + ": " + JSON.stringify(contentArray, null, 2) + "mensaje que debes responder: " + message.content},
+                {
+                  type: "text",
+                  text:
+                    "Historial de mensajes del usuario " +
+                    message.author.username +
+                    ": " +
+                    JSON.stringify(contentArray, null, 2) +
+                    "mensaje que debes responder: " +
+                    message.content,
+                },
                 {
                   type: "image_url",
                   image_url: {
@@ -254,9 +302,17 @@ client.on("messageCreate", async (message) => {
           ],
           max_tokens: 300,
         });
-        const image_url = response2.choices[0].message.content + "\n" + response.data[0].url;
-        console.log("Bot: " + image_url + "\n");
-        message.reply(image_url);
+
+        message.reply(response2.choices[0].message.content);
+        
+        const embed = new EmbedBuilder()
+          .setImage(response.data[0].url);
+        message.reply({embeds: [embed]});
+        
+        //const image_url = response2.choices[0].message.content + "\n" + response.data[0].url;
+        //console.log("Bot: " + image_url + "\n");
+        //message.reply(image_url);
+
       } else {
         const response = await openai.chat.completions.create({
           model: "gpt-4-vision-preview",
@@ -267,15 +323,26 @@ client.on("messageCreate", async (message) => {
             },
             {
               role: "user",
-              content: "Historial de mensajes del usuario " + message.author.username + ": " + JSON.stringify(contentArray, null, 2) + "mensaje que debes responder: " + message.content,
+              content:
+                "Historial de mensajes del usuario " +
+                message.author.username +
+                ": " +
+                JSON.stringify(contentArray, null, 2) +
+                "mensaje que debes responder: " +
+                message.content,
             },
           ],
           max_tokens: 500,
         });
         console.log("Bot: " + response.choices[0].message.content + "\n");
-        
-        console.log("Historial de mensajes del usuario " + message.author.username + ": " + JSON.stringify(contentArray, null, 2));
-        
+
+        console.log(
+          "Historial de mensajes del usuario " +
+            message.author.username +
+            ": " +
+            JSON.stringify(contentArray, null, 2),
+        );
+
         message.channel.send({
           content: response.choices[0].message.content,
           allowedMentions: { parse: [] },
@@ -294,7 +361,6 @@ client.on("messageCreate", async (message) => {
         }
       }
     }
-
   } catch (error) {
     console.error("Error:", error);
     message.reply("¡Ups! Algo salió mal. Intenta de nuevo más tarde.");
