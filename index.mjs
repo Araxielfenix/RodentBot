@@ -21,6 +21,7 @@ client.on('ready', () => {
 
 const configuration = new Configuration({
   apiKey: process.env.API_KEY,
+  basePath: "https://openrouter.ai/api/v1",
 });
 
 const openai = new OpenAIApi(configuration);
