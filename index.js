@@ -80,7 +80,7 @@ client.on("ready", () => {
           },
         ],
         max_tokens: 200,
-      });
+      }),
     })
       .catch((error) => {
         console.log(`OPENROUTER ERR: ${error}`);
@@ -126,7 +126,7 @@ client.on("guildMemberAdd", async (member) => {
             },
           ],
           max_tokens: 200,
-        });
+        }),
       })
       .catch((error) => {
         console.log(`OPENROUTER ERR: ${error}`);
