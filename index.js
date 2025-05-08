@@ -6,7 +6,6 @@ const {
   Partials,
   EmbedBuilder,
 } = require("discord.js");
-const { OpenAI } = require("openai");
 
 module.exports = {
   data: {
@@ -32,11 +31,6 @@ const client = new Client({
     GatewayIntentBits.GuildScheduledEvents,
   ],
   partials: [Partials.GuildMember],
-});
-
-const openai = new OpenAI({
-  baseURL: "https://openrouter.ai/api/v1",
-  apiKey: process.env.API_KEY,
 });
 
 var botP =
@@ -67,21 +61,31 @@ client.on("ready", () => {
       "Eres un moderador del Discord RodentPlay, estas inspirado escribiendo un mensaje para activar las conversaciones acerca de videojuegos para que los usuarios de este discord participen en el chat y compartan sus gustos en videojuegos y sus logros mas grandes en estos juegos, el mensaje debe contener un maximo de 4 renglones y debes mencionar a todos utilizando @everyone.";
 
     // Utilizar OpenAI para generar un mensaje automático
-    const response = await openai.chat.completions.create({
-      model: "google/gemini-2.0-flash-exp:free",
-      messages: [
-        {
-          role: "assistant",
-          content: botP,
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+        headers: {
+          "Authorization": `Bearer ${this.apiKey}`,
+          "Content-Type": "application/json",
         },
-        {
-          role: "user",
-          content: prompt,
-        },
-      ],
-      max_tokens: 200,
-    });
-
+      body: JSON.stringify({
+          model: "google/gemini-2.0-flash-exp:free",
+        messages: [
+          {
+            role: "assistant",
+            content: botP,
+          },
+          {
+            role: "user",
+            content: prompt,
+          },
+        ],
+        max_tokens: 200,
+      });
+    })
+      .catch((error) => {
+        console.log(`OPENROUTER ERR: ${error}`);
+      });
+    
     if (canal) {
       canal.send({
         content: response.choices[0].message.content,
@@ -103,21 +107,30 @@ client.on("guildMemberAdd", async (member) => {
     const prompt = `Un nuevo miembro se ha unido al servidor. Dale una valida bienvenida a  @${member.user.username}! La bienvenida no debe ser mayor a 4 renglones.`;
 
     // Utilizar OpenAI para generar un mensaje automático
-    const response = await openai.chat.completions.create({
-      model: "google/gemini-2.0-flash-exp:free",
-      messages: [
-        {
-          role: "assistant",
-          content: botP,
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+        headers: {
+          "Authorization": `Bearer ${this.apiKey}`,
+          "Content-Type": "application/json",
         },
-        {
-          role: "user",
-          content: prompt,
-        },
-      ],
-      max_tokens: 200,
-    });
-
+      body: JSON.stringify({
+          model: "google/gemini-2.0-flash-exp:free",
+          messages: [
+            {
+              role: "assistant",
+              content: botP,
+            },
+            {
+              role: "user",
+              content: prompt,
+            },
+          ],
+          max_tokens: 200,
+        });
+      })
+      .catch((error) => {
+        console.log(`OPENROUTER ERR: ${error}`);
+      });
     // Enviar el mensaje generado al canal de bienvenida
     canal.send({
       content: response.choices[0].message.content,
@@ -216,37 +229,46 @@ client.on("messageCreate", async (message) => {
 
     let imagen = message.attachments.first();
     if (imagen && imagen.url) {
-      const response = await openai.chat.completions.create({
-        model: "google/gemini-2.0-flash-exp:free",
-        messages: [
-          {
-            role: "assistant",
-            content: botP,
-          },
-          {
-            role: "user",
-            content: [
-              {
-                type: "text",
-                text:
-                  "Historial de mensajes del usuario " +
-                  message.author.username +
-                  ": " +
-                  JSON.stringify(contentArray, null, 2) +
-                  "mensaje que debes responder: " +
-                  message.content,
-              },
-              {
-                type: "image_url",
-                image_url: {
-                  url: imagen.url,
+      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${this.apiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "google/gemini-2.0-flash-exp:free",
+          messages: [
+            {
+              role: "assistant",
+              content: botP,
+            },
+            {
+              role: "user",
+              content: [
+                {
+                  type: "text",
+                  text:
+                    "Historial de mensajes del usuario " +
+                    message.author.username +
+                    ": " +
+                    JSON.stringify(contentArray, null, 2) +
+                    "mensaje que debes responder: " +
+                    message.content,
                 },
-              },
-            ],
-          },
-        ],
-        max_tokens: 300,
-      });
+                {
+                  type: "image_url",
+                  image_url: {
+                    url: imagen.url,
+                  },
+                },
+              ],
+            },
+          ],
+          max_tokens: 300,
+        })
+          .catch((error) => {
+          console.log(`OPENROUTER ERR: ${error}`);
+        });
       console.log(imagen);
       message.react("👀");
       const image_url = response.choices[0].message.content;
@@ -258,21 +280,34 @@ client.on("messageCreate", async (message) => {
         message.content.toLowerCase().includes("genera") ||
         message.content.toLowerCase().includes("dibuja")
       ) {
-        const response = await openai.images.generate({
+        const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${this.apiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
           model: "google/gemini-2.0-flash-exp:free",
-          prompt:
-            "Historial de mensajes del usuario " +
+          messages: "Historial de mensajes del usuario " +
             message.author.username +
             ": " +
             JSON.stringify(contentArray, null, 2) +
             "mensaje que debes responder: " +
-            message.content,
-          n: 1,
-          size: "1024x1024",
-        });
+            message.content,,
+        }),
+      })
+      .catch((error) => {
+        console.log(`OPENROUTER ERR: ${error}`);
+      });
         message.react("🎨");
         await message.channel.sendTyping();
-        const response2 = await openai.chat.completions.create({
+        const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${this.apiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
           model: "bytedance-research/ui-tars-72b:free",
           messages: [
             {
@@ -299,10 +334,11 @@ client.on("messageCreate", async (message) => {
                   },
                 },
               ],
-            },
-          ],
-          max_tokens: 300,
-        });
+        }),
+      })
+      .catch((error) => {
+        console.log(`OPENROUTER ERR: ${error}`);
+      });
 
         message.reply(response2.choices[0].message.content);
         
@@ -315,7 +351,16 @@ client.on("messageCreate", async (message) => {
         //message.reply(image_url);
 
       } else {
-        const response = await openai.chat.completions.create({
+
+      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${this.apiKey}`,
+          "HTTP-Referer": process.env.YOUR_SITE_URL || "", // Opcional
+          "X-Title": process.env.YOUR_SITE_NAME || "", // Opcional
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
           model: "meta-llama/llama-4-maverick:free",
           messages: [
             {
@@ -333,8 +378,12 @@ client.on("messageCreate", async (message) => {
                 message.content,
             },
           ],
-          max_tokens: 500,
-        });
+        }),
+      })
+      .catch((error) => {
+        console.log(`OPENROUTER ERR: ${error}`);
+      });
+        
         console.log("Bot: " + response.choices[0].message.content + "\n");
 
         console.log(
