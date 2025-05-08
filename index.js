@@ -331,7 +331,7 @@ client.on("messageCreate", async (message) => {
                   {
                     type: "image_url",
                     image_url: {
-                      url: response5.data[0].url,
+                      url: response4.data[0].url,
                     },
                   },
                 ],
@@ -388,7 +388,7 @@ client.on("messageCreate", async (message) => {
             console.log(`OPENROUTER ERR: ${error}`);
           });
 
-        console.log("Bot: " + response6.choices[0].message.content + "\n");
+        console.log("Bot: " + response6 + "\n");
 
         console.log(
           "Historial de mensajes del usuario " +
