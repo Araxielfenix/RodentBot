@@ -68,7 +68,7 @@ client.on("ready", () => {
 
     // Utilizar OpenAI para generar un mensaje automático
     const response = await openai.chat.completions.create({
-      model: "gpt-4-vision-preview",
+      model: "google/gemini-2.0-flash-exp:free",
       messages: [
         {
           role: "assistant",
@@ -104,7 +104,7 @@ client.on("guildMemberAdd", async (member) => {
 
     // Utilizar OpenAI para generar un mensaje automático
     const response = await openai.chat.completions.create({
-      model: "gpt-4-vision-preview",
+      model: "google/gemini-2.0-flash-exp:free",
       messages: [
         {
           role: "assistant",
@@ -217,7 +217,7 @@ client.on("messageCreate", async (message) => {
     let imagen = message.attachments.first();
     if (imagen && imagen.url) {
       const response = await openai.chat.completions.create({
-        model: "gpt-4-vision-preview",
+        model: "google/gemini-2.0-flash-exp:free",
         messages: [
           {
             role: "assistant",
@@ -259,7 +259,7 @@ client.on("messageCreate", async (message) => {
         message.content.toLowerCase().includes("dibuja")
       ) {
         const response = await openai.images.generate({
-          model: "dall-e-3",
+          model: "google/gemini-2.0-flash-exp:free",
           prompt:
             "Historial de mensajes del usuario " +
             message.author.username +
@@ -273,7 +273,7 @@ client.on("messageCreate", async (message) => {
         message.react("🎨");
         await message.channel.sendTyping();
         const response2 = await openai.chat.completions.create({
-          model: "gpt-4-vision-preview",
+          model: "bytedance-research/ui-tars-72b:free",
           messages: [
             {
               role: "assistant",
@@ -316,7 +316,7 @@ client.on("messageCreate", async (message) => {
 
       } else {
         const response = await openai.chat.completions.create({
-          model: "gpt-4-vision-preview",
+          model: "meta-llama/llama-4-maverick:free",
           messages: [
             {
               role: "assistant",
