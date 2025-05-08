@@ -1,7 +1,6 @@
 
 import 'dotenv/config';
 import { Client, IntentsBitField } from 'discord.js';
-import { Configuration, OpenAIApi } from 'openai';
 const client = new Client({
   intents: [
     IntentsBitField.Flags.Guilds,
@@ -18,13 +17,6 @@ const client = new Client({
 client.on('ready', () => {
   console.log('🫡A la orden pal desorden.');
 });
-
-const configuration = new Configuration({
-  baseURL: "https://openrouter.ai/api/v1",
-  apiKey: process.env.API_KEY,
-});
-
-const openai = new OpenAIApi(configuration);
 
 client.on('messageCreate', async (message) => {
   if (message.author.bot) return;
@@ -68,14 +60,22 @@ client.on('messageCreate', async (message) => {
       }
     });
 
-      const result = await openai
-      .createChatCompletion({
-        model: "gpt-4-vision-preview",
-        messages: conversationLog,
-        // max_tokens: 256, // limit token usage
+    // Llamada a la API de OpenRouter usando fetch
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${this.apiKey}`,
+          "HTTP-Referer": process.env.YOUR_SITE_URL || "", // Opcional
+          "X-Title": process.env.YOUR_SITE_NAME || "", // Opcional
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "google/gemini-2.0-flash-exp:free",
+          messages: conversationLog,
+        }),
       })
       .catch((error) => {
-        console.log(`OPENAI ERR: ${error}`);
+        console.log(`OPENROUTER ERR: ${error}`);
       });
     message.reply(result.data.choices[0].message);
   } catch (error) {
