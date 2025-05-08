@@ -68,7 +68,7 @@ client.on("ready", () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.0-flash-exp:free",
+        model: "google/gemma-2-9b-it:free",
         messages: [
           {
             role: "assistant",
@@ -114,7 +114,7 @@ client.on("guildMemberAdd", async (member) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.0-flash-exp:free",
+        model: "google/gemma-2-9b-it:free",
         messages: [
           {
             role: "assistant",
@@ -365,7 +365,7 @@ client.on("messageCreate", async (message) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            model: "meta-llama/llama-4-maverick:free",
+            model: "google/gemma-2-9b-it:free",
             messages: [
               {
                 role: "assistant",
