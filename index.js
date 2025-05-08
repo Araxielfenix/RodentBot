@@ -230,41 +230,42 @@ client.on("messageCreate", async (message) => {
     let imagen = message.attachments.first();
     if (imagen && imagen.url) {
       const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${this.apiKey}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: "google/gemini-2.0-flash-exp:free",
-          messages: [
-            {
-              role: "assistant",
-              content: botP,
-            },
-            {
-              role: "user",
-              content: [
-                {
-                  type: "text",
-                  text:
-                    "Historial de mensajes del usuario " +
-                    message.author.username +
-                    ": " +
-                    JSON.stringify(contentArray, null, 2) +
-                    "mensaje que debes responder: " +
-                    message.content,
-                },
-                {
-                  type: "image_url",
-                  image_url: {
-                    url: imagen.url,
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${this.apiKey}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: "google/gemini-2.0-flash-exp:free",
+            messages: [
+              {
+                role: "assistant",
+                content: botP,
+              },
+              {
+                role: "user",
+                content: [
+                  {
+                    type: "text",
+                    text:
+                      "Historial de mensajes del usuario " +
+                      message.author.username +
+                      ": " +
+                      JSON.stringify(contentArray, null, 2) +
+                      "mensaje que debes responder: " +
+                      message.content,
                   },
-                },
-              ],
-            },
-          ],
-          max_tokens: 300,
+                  {
+                    type: "image_url",
+                    image_url: {
+                      url: imagen.url,
+                    },
+                  },
+                ],
+              },
+            ],
+            max_tokens: 300,
+          }),
         })
           .catch((error) => {
           console.log(`OPENROUTER ERR: ${error}`);
