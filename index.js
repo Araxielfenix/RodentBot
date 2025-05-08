@@ -61,7 +61,7 @@ client.on("ready", () => {
       "Eres un moderador del Discord RodentPlay, estas inspirado escribiendo un mensaje para activar las conversaciones acerca de videojuegos para que los usuarios de este discord participen en el chat y compartan sus gustos en videojuegos y sus logros mas grandes en estos juegos, el mensaje debe contener un maximo de 4 renglones y debes mencionar a todos utilizando @everyone.";
 
     // Utilizar OpenAI para generar un mensaje automático
-    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    const response1 = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${this.apiKey}`,
@@ -88,7 +88,7 @@ client.on("ready", () => {
 
     if (canal) {
       canal.send({
-        content: response.choices[0].message.content,
+        content: response1.choices[0].message.content,
         allowedMentions: { parse: [] },
       });
     }
@@ -107,7 +107,7 @@ client.on("guildMemberAdd", async (member) => {
     const prompt = `Un nuevo miembro se ha unido al servidor. Dale una valida bienvenida a  @${member.user.username}! La bienvenida no debe ser mayor a 4 renglones.`;
 
     // Utilizar OpenAI para generar un mensaje automático
-    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    const response2 = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${this.apiKey}`,
@@ -133,7 +133,7 @@ client.on("guildMemberAdd", async (member) => {
       });
     // Enviar el mensaje generado al canal de bienvenida
     canal.send({
-      content: response.choices[0].message.content,
+      content: response2.choices[0].message.content,
       allowedMentions: { parse: [] },
     });
 
@@ -229,7 +229,7 @@ client.on("messageCreate", async (message) => {
 
     let imagen = message.attachments.first();
     if (imagen && imagen.url) {
-      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      const response3 = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${this.apiKey}`,
@@ -272,8 +272,8 @@ client.on("messageCreate", async (message) => {
         });
       console.log(imagen);
       message.react("👀");
-      const image_url = response.choices[0].message.content;
-      console.log("Bot: " + response.choices[0].message.content + "\n");
+      const image_url = response3.choices[0].message.content;
+      console.log("Bot: " + response3.choices[0].message.content + "\n");
       message.reply(image_url);
     } else {
       if (
@@ -281,7 +281,7 @@ client.on("messageCreate", async (message) => {
         message.content.toLowerCase().includes("genera") ||
         message.content.toLowerCase().includes("dibuja")
       ) {
-        const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        const response4 = await fetch("https://openrouter.ai/api/v1/chat/completions", {
           method: "POST",
           headers: {
             "Authorization": `Bearer ${this.apiKey}`,
@@ -302,7 +302,7 @@ client.on("messageCreate", async (message) => {
           });
         message.react("🎨");
         await message.channel.sendTyping();
-        const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        const response5 = await fetch("https://openrouter.ai/api/v1/chat/completions", {
           method: "POST",
           headers: {
             "Authorization": `Bearer ${this.apiKey}`,
@@ -344,10 +344,10 @@ client.on("messageCreate", async (message) => {
             console.log(`OPENROUTER ERR: ${error}`);
           });
 
-        message.reply(response2.choices[0].message.content);
+        message.reply(response5.choices[0].message.content);
 
         const embed = new EmbedBuilder()
-          .setImage(response.data[0].url);
+          .setImage(response4.data[0].url);
         message.reply({ embeds: [embed] });
 
         //const image_url = response2.choices[0].message.content + "\n" + response.data[0].url;
@@ -356,7 +356,7 @@ client.on("messageCreate", async (message) => {
 
       } else {
 
-        const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        const response6 = await fetch("https://openrouter.ai/api/v1/chat/completions", {
           method: "POST",
           headers: {
             "Authorization": `Bearer ${this.apiKey}`,
@@ -388,7 +388,7 @@ client.on("messageCreate", async (message) => {
             console.log(`OPENROUTER ERR: ${error}`);
           });
 
-        console.log("Bot: " + response.choices[0].message.content + "\n");
+        console.log("Bot: " + response6.choices[0].message.content + "\n");
 
         console.log(
           "Historial de mensajes del usuario " +
@@ -398,7 +398,7 @@ client.on("messageCreate", async (message) => {
         );
 
         message.channel.send({
-          content: response.choices[0].message.content,
+          content: response6.choices[0].message.content,
           allowedMentions: { parse: [] },
         });
 
