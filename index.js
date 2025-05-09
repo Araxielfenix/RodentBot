@@ -93,7 +93,7 @@ client.on("ready", () => {
         const data1 = await response1.json();
         console.log("data1: " + data1.choices[0].message.content);
         canal.send("Prueba desde data1");
-        canal.send({
+        //canal.send({
           content: data1.choices[0].message.content,
           allowedMentions: { parse: [] },
         });
@@ -147,7 +147,7 @@ client.on("guildMemberAdd", async (member) => {
       const data2 = await response2.json();
       console.log("data2: " + data2.choices[0].message.content);
       canal.send("Prueba desde data2");
-      canal.send({
+      //canal.send({
         content: data2.choices[0].message.content,
         allowedMentions: { parse: [] },
       });
