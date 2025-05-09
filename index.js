@@ -43,6 +43,18 @@ botP +=
   "Es capaz de mantener la armonía del Discord con pláticas entretenidas, usando emojis, bromas, algunos troleos y, sobre todo, sabe distinguir el género y personalidad de los usuarios a partir del nombre de su cuenta, asi como hacer juegos de palabras o reconocer ciertas referencias en los nombres de los usuarios.";
 
 let timer = 0;
+// Inicializamos la bandera para rastrear qué API Key estamos usando
+let currentApiKeyFlag = 1;
+
+// Función para obtener la API Key actual
+function getApiKey() {
+  return currentApiKeyFlag === 1 ? process.env.API_KEY1 : process.env.API_KEY2;
+}
+
+// Función para cambiar la API Key en caso de error
+function switchApiKey() {
+  currentApiKeyFlag = currentApiKeyFlag === 1 ? 2 : 1;
+}
 
 const canal = client.channels.cache.get(process.env.GENERAL_ID);
 
@@ -62,11 +74,13 @@ client.on("ready", () => {
     const prompt =
       "Eres un moderador del Discord RodentPlay, estas inspirado escribiendo un mensaje para activar las conversaciones acerca de videojuegos para que los usuarios de este discord participen en el chat y compartan sus gustos en videojuegos y sus logros mas grandes en estos juegos, el mensaje debe contener un maximo de 4 renglones y debes mencionar a todos utilizando @everyone.";
 
+    let contador = 21600000;
+
     // Utilizar OpenAI para generar un mensaje automático
     const response1 = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${process.env.API_KEY}`,
+        "Authorization": `Bearer ${getApiKey()}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -89,25 +103,32 @@ client.on("ready", () => {
       });
 
     if (canal) {
-      if (response1 && response1.choices && response1.choices.length > 0) {
-        const data1 = await response1.json();
-        console.log("data1: " + data1.choices[0].message.content);
-        canal.send("Prueba desde data1");
-        //canal.send({
-        //  content: data1.choices[0].message.content,
-        //  allowedMentions: { parse: [] },
-        //});
-      } else {
-        console.error("La API no devolvió una respuesta válida:", response1);
-        canal.send("¡Lo siento! Algo salió mal al procesar la solicitud.");
+      if (response1 && response1.ok) {
+        if (response1 && response1.choices && response1.choices.length > 0) {
+          const data1 = await response1.json();
+          console.log("data1: " + data1.choices[0].message.content);
+          canal.send("Prueba desde data1");
+          canal.send({
+            content: data1.choices[0].message.content,
+            allowedMentions: { parse: [] },
+          });
+          contador = 21600000;
+        } else {
+          console.error("La API no devolvió una respuesta válida:", response1);
+          canal.send("¡Lo siento! Algo salió mal al procesar la solicitud.");
+        }
+      }
+      else if (response1.status === 401 || response1.status === 429) {
+        console.log(`Error ${response.status}: Cambiando API Key...`);
+        switchApiKey();
+        contador = 1; // Reintentamos con la nueva API Key
       }
     }
-  }, 21600000); // Intervalo de 6 horas
+  }, contador); // Intervalo de 6 horas
 });
 
 // Configuración del evento guildMemberAdd
 client.on("guildMemberAdd", async (member) => {
-  //if(member.author.username === "RodentBot") return;
   try {
     console.log(member);
     // Canal donde quieres enviar el mensaje de bienvenida
@@ -120,7 +141,7 @@ client.on("guildMemberAdd", async (member) => {
     const response2 = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${process.env.API_KEY}`,
+        "Authorization": `Bearer ${getApiKey()}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -143,17 +164,23 @@ client.on("guildMemberAdd", async (member) => {
       });
 
     // Enviar el mensaje generado al canal de bienvenida
-    if (response2 && response2.choices && response2.choices.length > 0) {
-      const data2 = await response2.json();
-      console.log("data2: " + data2.choices[0].message.content);
-      canal.send("Prueba desde data2");
-      //canal.send({
-      //  content: data2.choices[0].message.content,
-      //  allowedMentions: { parse: [] },
-      //});
-    } else {
-      console.error("La API no devolvió una respuesta válida:", response2);
-      canal.send("¡Bienvenido al servidor! Pero algo salió mal al generar un mensaje automático.");
+    if (response2 && response2.ok) {
+      if (response2 && response2.choices && response2.choices.length > 0) {
+        const data2 = await response2.json();
+        console.log("data2: " + data2.choices[0].message.content);
+        canal.send("Prueba desde data2");
+        canal.send({
+          content: data2.choices[0].message.content,
+          allowedMentions: { parse: [] },
+        });
+      } else {
+        console.error("La API no devolvió una respuesta válida:", response2);
+        canal.send("¡Bienvenido al servidor! Pero algo salió mal al generar un mensaje automático.");
+      }
+    }
+    else if (response2status === 401 || response2.status === 429) {
+      console.log(`Error ${response2.status}: Cambiando API Key...`);
+      switchApiKey();
     }
 
   } catch (error) {
@@ -190,6 +217,11 @@ client.on("messageCreate", async (message) => {
         "Efisima",
         "Efesota",
         "nunchu2NunchuF",
+        "buenas",
+        "wenas",
+        "suicidio",
+        "help",
+
       ];
       const containsKeyword = keywords.some((keyword) =>
         message.content.toLowerCase().includes(keyword.toLowerCase()),
@@ -251,7 +283,7 @@ client.on("messageCreate", async (message) => {
       const response3 = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${process.env.API_KEY}`,
+          "Authorization": `Bearer ${getApiKey()}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -289,149 +321,115 @@ client.on("messageCreate", async (message) => {
         .catch((error) => {
           console.log(`OPENROUTER ERR: ${error}`);
         });
-      console.log(imagen);
-      message.react("👀");
-      const image_url = response3.choices[0].message.content;
-      console.log("Bot: " + response3.choices[0].message.content + "\n");
-      message.reply(image_url);
-    } else {
-      if (
-        message.content.toLowerCase().includes("imagina") ||
-        message.content.toLowerCase().includes("genera") ||
-        message.content.toLowerCase().includes("dibuja")
-      ) {
-        const response4 = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${process.env.API_KEY}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            model: "google/gemini-2.0-flash-exp:free",
-            messages: [
-              {
-                role: "assistant",
-                content: botP,
-              },
-              {
-                role: "user",
-                content: [
-                  {
-                    type: "text",
-                    text:
-                      "Historial de mensajes del usuario " +
-                      message.author.username +
-                      ": " +
-                      JSON.stringify(contentArray, null, 2) +
-                      "mensaje que debes responder: " +
-                      message.content,
+
+      if (response3 && response3.ok) {
+        console.log(imagen);
+        message.react("👀");
+        const image_url = response3.choices[0].message.content;
+        console.log("Bot: " + response3.choices[0].message.content + "\n");
+        message.reply(image_url);
+      }
+      else if (response2status === 401 || response2.status === 429) {
+        console.log(`Error ${response3.status}: Cambiando API Key...`);
+        switchApiKey();
+      }
+    } else if (
+      message.content.toLowerCase().includes("imagina") ||
+      message.content.toLowerCase().includes("genera") ||
+      message.content.toLowerCase().includes("dibuja")
+    ) {
+      message.react("🎨");
+      const response4 = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${getApiKey()}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "google/gemini-2.0-flash-exp:free",
+          messages: [
+            {
+              role: "assistant",
+              content: botP,
+            },
+            {
+              role: "user",
+              content: [
+                {
+                  type: "text",
+                  text:
+                    "Historial de mensajes del usuario " +
+                    message.author.username +
+                    ": " +
+                    JSON.stringify(contentArray, null, 2) +
+                    "mensaje que debes responder: " +
+                    message.content,
+                },
+                {
+                  type: "image_url",
+                  image_url: {
+                    url: imagen.url,
                   },
-                  {
-                    type: "image_url",
-                    image_url: {
-                      url: imagen.url,
-                    },
-                  },
-                ],
-              }
-            ]
-          }
-          ),
-        })
-          .catch((error) => {
-            console.log(`OPENROUTER ERR: ${error}`);
-          });
+                },
+              ],
+            }
+          ]
+        }
+        ),
+      })
+        .catch((error) => {
+          console.log(`OPENROUTER ERR: ${error}`);
+        });
+
+      if (response4 && response4.ok) {
         const data4 = await response4.json();
         console.log("Info en data4: " + JSON.stringify(data4, null, 2));
-        message.react("🎨");
         await message.channel.sendTyping();
-        const response5 = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${process.env.API_KEY}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            model: "bytedance-research/ui-tars-72b:free",
-            messages: [
-              {
-                role: "assistant",
-                content: botP,
-              },
-              {
-                role: "user",
-                content: [
-                  {
-                    type: "text",
-                    text:
-                      "Historial de mensajes del usuario " +
-                      message.author.username +
-                      ": " +
-                      JSON.stringify(contentArray, null, 2) +
-                      "mensaje que debes responder: " +
-                      message.content,
-                  },
-                  {
-                    type: "image_url",
-                    image_url: {
-                      url: response4.choices[0].message,
-                    },
-                  },
-                ],
-              }
-            ]
-          }
-          ),
-        })
-          .catch((error) => {
-            console.log(`OPENROUTER ERR: ${error}`);
-          });
 
-        const data5 = await response5.json();
-        console.log("data5: " + data5.choices[0].message.content);
-        message.reply(data5.choices[0].message.content);
-        //message.reply(response5.choices[0].message.content);
+        console.log("data4: " + data4.choices[0].message.content);
+        message.reply(data4.choices[0].message.content);
 
         const embed = new EmbedBuilder()
-          .setImage(response4.data[0].url);
+          .setImage(data4.choices[0].message.content);
         message.reply({ embeds: [embed] });
 
-        //const image_url = response2.choices[0].message.content + "\n" + response.data[0].url;
-        //console.log("Bot: " + image_url + "\n");
-        //message.reply(image_url);
+      } else if (response4status === 401 || response4.status === 429) {
+        console.log(`Error ${response4.status}: Cambiando API Key...`);
+        switchApiKey();
+      }
+    } else {
 
-      } else {
-
-        const response6 = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${process.env.API_KEY}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            model: "google/gemma-2-9b-it:free",
-            messages: [
-              {
-                role: "assistant",
-                content: botP,
-              },
-              {
-                role: "user",
-                content:
-                  "Historial de mensajes del usuario " +
-                  message.author.username +
-                  ": " +
-                  JSON.stringify(contentArray, null, 2) +
-                  "mensaje que debes responder: " +
-                  message.content,
-              },
-            ],
-          }),
-        })
-          .catch((error) => {
-            console.log(`OPENROUTER ERR (linea 405): ${error}`);
-          });
-
+      const response6 = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${getApiKey()}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "google/gemma-2-9b-it:free",
+          messages: [
+            {
+              role: "assistant",
+              content: botP,
+            },
+            {
+              role: "user",
+              content:
+                "Historial de mensajes del usuario " +
+                message.author.username +
+                ": " +
+                JSON.stringify(contentArray, null, 2) +
+                "mensaje que debes responder: " +
+                message.content,
+            },
+          ],
+        }),
+      })
+        .catch((error) => {
+          console.log(`OPENROUTER ERR (linea 405): ${error}`);
+        });
+      
+      if (response6 && response6.ok) {
         const data6 = await response6.json();
         const canal = client.channels.cache.get(process.env.GENERAL_ID);
         if (data6 && data6.choices && data6.choices.length > 0) {
@@ -444,26 +442,31 @@ client.on("messageCreate", async (message) => {
           console.error("Respuesta inválida de la API:", data6);
           message.reply("¡Ups! Algo salió mal al procesar tu solicitud. Por favor, intenta más tarde.");
         }
-
-        console.log(
-          "Historial de mensajes del usuario " +
-          message.author.username +
-          ": " +
-          JSON.stringify(contentArray, null, 2),
-        );
-
-        const userReactions = message.reactions.cache.filter((reaction) =>
-          reaction.users.cache.has(message.author.id),
-        );
-
-        try {
-          for (const reaction of userReactions.values()) {
-            await reaction.users.remove(message.author.id);
-          }
-        } catch (error) {
-          console.error("Failed to remove reactions.");
-        }
+      }else if (response4status === 401 || response4.status === 429) {
+        console.log(`Error ${response6.status}: Cambiando API Key...`);
+        switchApiKey();
       }
+
+
+      console.log(
+        "Historial de mensajes del usuario " +
+        message.author.username +
+        ": " +
+        JSON.stringify(contentArray, null, 2),
+      );
+
+      const userReactions = message.reactions.cache.filter((reaction) =>
+        reaction.users.cache.has(message.author.id),
+      );
+
+      try {
+        for (const reaction of userReactions.values()) {
+          await reaction.users.remove(message.author.id);
+        }
+      } catch (error) {
+        console.error("Failed to remove reactions.");
+      }
+
     }
   } catch (error) {
     console.error("Error:", error);
