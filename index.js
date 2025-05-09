@@ -63,6 +63,9 @@ client.on("ready", () => {
   client.user.setActivity("🫡A la orden pal desorden.", {
     type: ActivityType.Custom,
   });
+  
+  const contador = 21600000; // 6 horas en milisegundos
+
   // Configuración del intervalo para ejecutar una acción cada 6 horas
   setInterval(async () => {
     timer++;
@@ -73,8 +76,6 @@ client.on("ready", () => {
     // Mensaje prompt para generación automática (se puede variar)
     const prompt =
       "Eres un moderador del Discord RodentPlay, estas inspirado escribiendo un mensaje para activar las conversaciones acerca de videojuegos para que los usuarios de este discord participen en el chat y compartan sus gustos en videojuegos y sus logros mas grandes en estos juegos, el mensaje debe contener un maximo de 4 renglones y debes mencionar a todos utilizando @everyone.";
-
-    var contador = 21600000;
 
     // Utilizar OpenAI para generar un mensaje automático
     const response1 = await fetch("https://openrouter.ai/api/v1/chat/completions", {
