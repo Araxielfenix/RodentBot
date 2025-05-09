@@ -1,6 +1,6 @@
 import {job} from './keep_alive.js';
+import 'dotenv/config';
 
-require("dotenv/config");
 const {
   Client,
   GatewayIntentBits,
