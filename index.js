@@ -412,7 +412,7 @@ client.on("messageCreate", async (message) => {
       const canal = client.channels.cache.get(process.env.GENERAL_ID);
       if (data6 && data6.choices && data6.choices.length > 0) {
           console.log("Data6: " + data6.choices[0].message.content + "\n");
-          canal.send("Prueba desde data6");
+          //canal.send("Prueba desde data6");
           //message.channel.send({
           //    content: data6.choices[0].message.content,
           //    allowedMentions: { parse: [] },
@@ -428,11 +428,6 @@ client.on("messageCreate", async (message) => {
           ": " +
           JSON.stringify(contentArray, null, 2),
         );
-
-        message.channel.send({
-          content: response6.choices,
-          allowedMentions: { parse: [] },
-        });
 
         const userReactions = message.reactions.cache.filter((reaction) =>
           reaction.users.cache.has(message.author.id),
