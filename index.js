@@ -388,7 +388,17 @@ client.on("messageCreate", async (message) => {
             console.log(`OPENROUTER ERR: ${error}`);
           });
 
-        console.log("Bot: " + response6.choices[0] + "\n");
+      const data = await response6.json();
+      if (data && data.choices && data.choices.length > 0) {
+          console.log("Bot: " + data.choices[0].message.content + "\n");
+          message.channel.send({
+              content: data.choices[0].message.content,
+              allowedMentions: { parse: [] },
+          });
+      } else {
+          console.error("Respuesta inválida de la API:", data);
+          message.reply("¡Ups! Algo salió mal al procesar tu solicitud. Por favor, intenta más tarde.");
+      }
 
         console.log(
           "Historial de mensajes del usuario " +
