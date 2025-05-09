@@ -89,6 +89,7 @@ client.on("ready", () => {
     if (canal) {
       if (response1 && response1.choices && response1.choices.length > 0) {
         const data1 = await response1.json();
+        console.log("data1: " + data1.choices[0].message.content);
         canal.send({
           content: data1.choices[0].message.content,
           allowedMentions: { parse: [] },
@@ -141,6 +142,7 @@ client.on("guildMemberAdd", async (member) => {
     // Enviar el mensaje generado al canal de bienvenida
     if (response2 && response2.choices && response2.choices.length > 0) {
       const data2 = await response2.json();
+      console.log("data2: " + data2.choices[0].message.content);
       canal.send({
         content: data2.choices[0].message.content,
         allowedMentions: { parse: [] },
@@ -403,7 +405,7 @@ client.on("messageCreate", async (message) => {
 
       const data6 = await response6.json();
       if (data6 && data6.choices && data6.choices.length > 0) {
-          console.log("Bot: " + data6.choices[0].message.content + "\n");
+          console.log("Data6: " + data6.choices[0].message.content + "\n");
           message.channel.send({
               content: data6.choices[0].message.content,
               allowedMentions: { parse: [] },
