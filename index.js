@@ -350,7 +350,7 @@ client.on("messageCreate", async (message) => {
                   {
                     type: "image_url",
                     image_url: {
-                      url: image_url,
+                      url: response4.data[0].url,
                     },
                   },
                 ],
