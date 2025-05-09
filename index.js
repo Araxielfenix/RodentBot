@@ -1,3 +1,5 @@
+import {job} from './keep_alive.js';
+
 require("dotenv/config");
 const {
   Client,
@@ -16,6 +18,17 @@ module.exports = {
     await interaction.reply("pong");
   },
 };
+
+// Start keep alive cron job
+job.start();
+console.log(process.env);
+
+// Setup express app
+const app = express();
+const expressWsInstance = expressWs(app);
+
+// Set the view engine to ejs
+app.set('view engine', 'ejs');
 
 const client = new Client({
   intents: [
