@@ -141,7 +141,7 @@ client.on("guildMemberAdd", async (member) => {
       .catch((error) => {
         console.log(`OPENROUTER ERR: ${error}`);
       });
-    
+
     // Enviar el mensaje generado al canal de bienvenida
     if (response2 && response2.choices && response2.choices.length > 0) {
       const data2 = await response2.json();
@@ -151,10 +151,10 @@ client.on("guildMemberAdd", async (member) => {
       //  content: data2.choices[0].message.content,
       //  allowedMentions: { parse: [] },
       //});
-} else {
-  console.error("La API no devolvió una respuesta válida:", response2);
-  canal.send("¡Bienvenido al servidor! Pero algo salió mal al generar un mensaje automático.");
-}
+    } else {
+      console.error("La API no devolvió una respuesta válida:", response2);
+      canal.send("¡Bienvenido al servidor! Pero algo salió mal al generar un mensaje automático.");
+    }
 
   } catch (error) {
     console.error("Error en el manejo de mensajes:", error);
@@ -301,43 +301,46 @@ client.on("messageCreate", async (message) => {
         message.content.toLowerCase().includes("dibuja")
       ) {
         const response4 = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${process.env.API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: "google/gemini-2.0-flash-exp:free",
-          messages: [
-            {
-              role: "assistant",
-              content: botP,
-            },
-            {
-              role: "user",
-              content: [
-                {
-                  type: "text",
-                  text:
-                    "Historial de mensajes del usuario " +
-                    message.author.username +
-                    ": " +
-                    JSON.stringify(contentArray, null, 2) +
-                    "mensaje que debes responder: " +
-                    message.content,
-                },
-                {
-                  type: "image_url",
-                  image_url: {
-                    url: imagen.url,
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${process.env.API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: "google/gemini-2.0-flash-exp:free",
+            messages: [
+              {
+                role: "assistant",
+                content: botP,
+              },
+              {
+                role: "user",
+                content: [
+                  {
+                    type: "text",
+                    text:
+                      "Historial de mensajes del usuario " +
+                      message.author.username +
+                      ": " +
+                      JSON.stringify(contentArray, null, 2) +
+                      "mensaje que debes responder: " +
+                      message.content,
                   },
-                },
-              ],
-        }),
-      })
-      .catch((error) => {
-        console.log(`OPENROUTER ERR: ${error}`);
-      });
+                  {
+                    type: "image_url",
+                    image_url: {
+                      url: imagen.url,
+                    },
+                  },
+                ],
+              }
+            ]
+          }
+          ),
+        })
+          .catch((error) => {
+            console.log(`OPENROUTER ERR: ${error}`);
+          });
         const data4 = await response4.json();
         console.log("Info en data4: " + JSON.stringify(data4, null, 2));
         message.react("🎨");
@@ -378,16 +381,16 @@ client.on("messageCreate", async (message) => {
               }
             ]
           }
-        ),
+          ),
         })
           .catch((error) => {
             console.log(`OPENROUTER ERR: ${error}`);
           });
 
-          const data5 = await response5.json();
-          console.log("data5: " + data5.choices[0].message.content);
-          message.reply(data5.choices[0].message.content);
-          //message.reply(response5.choices[0].message.content);
+        const data5 = await response5.json();
+        console.log("data5: " + data5.choices[0].message.content);
+        message.reply(data5.choices[0].message.content);
+        //message.reply(response5.choices[0].message.content);
 
         const embed = new EmbedBuilder()
           .setImage(response4.data[0].url);
@@ -429,18 +432,18 @@ client.on("messageCreate", async (message) => {
             console.log(`OPENROUTER ERR (linea 405): ${error}`);
           });
 
-      const data6 = await response6.json();
-      const canal = client.channels.cache.get(process.env.GENERAL_ID);
-      if (data6 && data6.choices && data6.choices.length > 0) {
+        const data6 = await response6.json();
+        const canal = client.channels.cache.get(process.env.GENERAL_ID);
+        if (data6 && data6.choices && data6.choices.length > 0) {
           console.log("Data6: " + data6.choices[0].message.content + "\n");
           message.channel.send({
-              content: data6.choices[0].message.content,
-              allowedMentions: { parse: [] },
+            content: data6.choices[0].message.content,
+            allowedMentions: { parse: [] },
           });
-      } else {
+        } else {
           console.error("Respuesta inválida de la API:", data6);
           message.reply("¡Ups! Algo salió mal al procesar tu solicitud. Por favor, intenta más tarde.");
-      }
+        }
 
         console.log(
           "Historial de mensajes del usuario " +
