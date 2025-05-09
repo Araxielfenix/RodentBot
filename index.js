@@ -319,6 +319,7 @@ client.on("messageCreate", async (message) => {
       .catch((error) => {
         console.log(`OPENROUTER ERR: ${error}`);
       });
+        const data4 = await response4.json();
         message.react("🎨");
         await message.channel.sendTyping();
         const response5 = await fetch("https://openrouter.ai/api/v1/chat/completions", {
@@ -350,7 +351,7 @@ client.on("messageCreate", async (message) => {
                   {
                     type: "image_url",
                     image_url: {
-                      url: response4.data[0].url,
+                      url: data4.choices[0].message,
                     },
                   },
                 ],
@@ -365,7 +366,7 @@ client.on("messageCreate", async (message) => {
 
           const data5 = await response5.json();
           console.log("data5: " + data5.choices[0].message.content);
-          message.reply(rdata5.choices[0].message.content);
+          message.reply(data5.choices[0].message.content);
           //message.reply(response5.choices[0].message.content);
 
         const embed = new EmbedBuilder()
