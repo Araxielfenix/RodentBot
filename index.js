@@ -124,7 +124,7 @@ client.on("ready", () => {
       else if (response1.status === 401 || response1.status === 429) {
         console.log(`Error ${response.status}: Cambiando API Key...`);
         switchApiKey();
-        if (API_KEYcurrent == 1{
+        if (API_KEYcurrent == 1){
           api_key = process.env.API_KEY1;
         }else{
           api_key = process.env.API_KEY2;
@@ -189,7 +189,7 @@ client.on("guildMemberAdd", async (member) => {
     else if (response2status === 401 || response2.status === 429) {
       console.log(`Error ${response2.status}: Cambiando API Key...`);
       switchApiKey();
-      if (API_KEYcurrent == 1{
+      if (API_KEYcurrent == 1){
           api_key = process.env.API_KEY1;
         }else{
           api_key = process.env.API_KEY2;
@@ -345,7 +345,7 @@ client.on("messageCreate", async (message) => {
       else if (response2status === 401 || response2.status === 429) {
         console.log(`Error ${response3.status}: Cambiando API Key...`);
         switchApiKey();
-        if (API_KEYcurrent == 1{
+        if (API_KEYcurrent == 1){
           api_key = process.env.API_KEY1;
         }else{
           api_key = process.env.API_KEY2;
@@ -414,7 +414,7 @@ client.on("messageCreate", async (message) => {
       } else if (response4status === 401 || response4.status === 429) {
         console.log(`Error ${response4.status}: Cambiando API Key...`);
         switchApiKey();
-        if (API_KEYcurrent == 1{
+        if (API_KEYcurrent == 1){
           api_key = process.env.API_KEY1;
         }else{
           api_key = process.env.API_KEY2;
@@ -468,7 +468,7 @@ client.on("messageCreate", async (message) => {
       }else if (response5status === 401 || response5.status === 429) {
         console.log(`Error ${response5.status}: Cambiando API Key...`);
         switchApiKey();
-        if (API_KEYcurrent == 1{
+        if (API_KEYcurrent == 1){
           api_key = process.env.API_KEY1;
         }else{
           api_key = process.env.API_KEY2;
