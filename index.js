@@ -142,7 +142,7 @@ client.on("guildMemberAdd", async (member) => {
     if (response2 && response2.choices && response2.choices.length > 0) {
       const data2 = await response2.json();
       canal.send({
-        content: data2.choices[0].message.content,,
+        content: data2.choices[0].message.content,
         allowedMentions: { parse: [] },
       });
 } else {
