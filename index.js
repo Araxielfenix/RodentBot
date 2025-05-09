@@ -65,7 +65,7 @@ client.on("ready", () => {
   client.user.setActivity("🫡A la orden pal desorden.", {
     type: ActivityType.Custom,
   });
-  
+
   const contador = 21600000; // 6 horas en milisegundos
 
   // Configuración del intervalo para ejecutar una acción cada 6 horas
@@ -124,10 +124,10 @@ client.on("ready", () => {
       else if (response1.status === 401 || response1.status === 429) {
         console.log(`Error ${response.status}: Cambiando API Key...`);
         switchApiKey();
-        if (API_KEYcurrent == 1){
-          api_key = process.env.API_KEY1;
-        }else{
-          api_key = process.env.API_KEY2;
+        if (API_KEYcurrent == 1) {
+          apiKey = process.env.API_KEY1;
+        } else {
+          apiKey = process.env.API_KEY2;
         }
         contador = 1; // Reintentamos con la nueva API Key
       }
@@ -189,11 +189,11 @@ client.on("guildMemberAdd", async (member) => {
     else if (response2status === 401 || response2.status === 429) {
       console.log(`Error ${response2.status}: Cambiando API Key...`);
       switchApiKey();
-      if (API_KEYcurrent == 1){
-          api_key = process.env.API_KEY1;
-        }else{
-          api_key = process.env.API_KEY2;
-        }
+      if (API_KEYcurrent == 1) {
+        apiKey = process.env.API_KEY1;
+      } else {
+        apiKey = process.env.API_KEY2;
+      }
     }
 
   } catch (error) {
@@ -345,10 +345,10 @@ client.on("messageCreate", async (message) => {
       else if (response2status === 401 || response2.status === 429) {
         console.log(`Error ${response3.status}: Cambiando API Key...`);
         switchApiKey();
-        if (API_KEYcurrent == 1){
-          api_key = process.env.API_KEY1;
-        }else{
-          api_key = process.env.API_KEY2;
+        if (API_KEYcurrent == 1) {
+          apiKey = process.env.API_KEY1;
+        } else {
+          apiKey = process.env.API_KEY2;
         }
       }
     } else if (
@@ -414,10 +414,10 @@ client.on("messageCreate", async (message) => {
       } else if (response4status === 401 || response4.status === 429) {
         console.log(`Error ${response4.status}: Cambiando API Key...`);
         switchApiKey();
-        if (API_KEYcurrent == 1){
-          api_key = process.env.API_KEY1;
-        }else{
-          api_key = process.env.API_KEY2;
+        if (API_KEYcurrent == 1) {
+          apiKey = process.env.API_KEY1;
+        } else {
+          apiKey = process.env.API_KEY2;
         }
       }
     } else {
@@ -451,7 +451,7 @@ client.on("messageCreate", async (message) => {
         .catch((error) => {
           console.log(`OPENROUTER ERR (linea 405): ${error}`);
         });
-      
+
       if (response5 && response5.ok) {
         const data5 = await response5.json();
         const canal = client.channels.cache.get(process.env.GENERAL_ID);
@@ -465,13 +465,13 @@ client.on("messageCreate", async (message) => {
           console.error("Respuesta inválida de la API:", data5);
           message.reply("¡Ups! Algo salió mal al procesar tu solicitud. Por favor, intenta más tarde.");
         }
-      }else if (response5status === 401 || response5.status === 429) {
+      } else if (response5status === 401 || response5.status === 429) {
         console.log(`Error ${response5.status}: Cambiando API Key...`);
         switchApiKey();
-        if (API_KEYcurrent == 1){
-          api_key = process.env.API_KEY1;
-        }else{
-          api_key = process.env.API_KEY2;
+        if (API_KEYcurrent == 1) {
+          apiKey = process.env.API_KEY1;
+        } else {
+          apiKey = process.env.API_KEY2;
         }
       }
 
