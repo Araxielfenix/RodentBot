@@ -320,7 +320,7 @@ client.on("messageCreate", async (message) => {
         console.log(`OPENROUTER ERR: ${error}`);
       });
         const data4 = await response4.json();
-        console.log("Info en data4: " + data4.choices);
+        console.log("Info en data4: " + JSON.stringify(data4, null, 2));
         console.log("\nInfo en response4: " + response4.choices[0].message);
         message.react("🎨");
         await message.channel.sendTyping();
