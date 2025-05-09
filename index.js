@@ -9,16 +9,6 @@ import {
   EmbedBuilder
 } from 'discord.js';
 
-module.exports = {
-  data: {
-    name: "ping",
-    description: "bot status",
-  },
-  run: async ({ interaction }) => {
-    await interaction.reply("pong");
-  },
-};
-
 // Start keep alive cron job
 job.start();
 console.log(process.env);
