@@ -313,7 +313,7 @@ client.on("messageCreate", async (message) => {
             ": " +
             JSON.stringify(contentArray, null, 2) +
             "mensaje que debes responder: " +
-            message.content,,
+            message.content,
         }),
       })
       .catch((error) => {
