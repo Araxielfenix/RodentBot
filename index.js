@@ -409,7 +409,7 @@ client.on("messageCreate", async (message) => {
               allowedMentions: { parse: [] },
           });
       } else {
-          console.error("Respuesta inválida de la API:", data);
+          console.error("Respuesta inválida de la API:", data6);
           message.reply("¡Ups! Algo salió mal al procesar tu solicitud. Por favor, intenta más tarde.");
       }
 
