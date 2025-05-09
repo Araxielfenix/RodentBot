@@ -7,7 +7,7 @@ const {
   ActivityType,
   Partials,
   EmbedBuilder,
-} = from "discord.js";
+} from "discord.js";
 
 module.exports = {
   data: {
