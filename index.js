@@ -87,10 +87,16 @@ client.on("ready", () => {
       });
 
     if (canal) {
-      canal.send({
-        content: response1.choices[0].message.content,
-        allowedMentions: { parse: [] },
-      });
+      if (response1 && response1.choices && response1.choices.length > 0) {
+        const data1 = await response1.json();
+        canal.send({
+          content: data1.choices[0].message.content,
+          allowedMentions: { parse: [] },
+        });
+      } else {
+        console.error("La API no devolvió una respuesta válida:", response1);
+        canal.send("¡Lo siento! Algo salió mal al procesar la solicitud.");
+      }
     }
   }, 21600000); // Intervalo de 6 horas
 });
@@ -131,11 +137,18 @@ client.on("guildMemberAdd", async (member) => {
       .catch((error) => {
         console.log(`OPENROUTER ERR: ${error}`);
       });
+    
     // Enviar el mensaje generado al canal de bienvenida
-    canal.send({
-      content: response2.choices[0].message.content,
-      allowedMentions: { parse: [] },
-    });
+    if (response2 && response2.choices && response2.choices.length > 0) {
+      const data2 = await response2.json();
+      canal.send({
+        content: data2.choices[0].message.content,,
+        allowedMentions: { parse: [] },
+      });
+} else {
+  console.error("La API no devolvió una respuesta válida:", response2);
+  canal.send("¡Bienvenido al servidor! Pero algo salió mal al generar un mensaje automático.");
+}
 
   } catch (error) {
     console.error("Error en el manejo de mensajes:", error);
@@ -388,11 +401,11 @@ client.on("messageCreate", async (message) => {
             console.log(`OPENROUTER ERR: ${error}`);
           });
 
-      const data = await response6.json();
-      if (data && data.choices && data.choices.length > 0) {
-          console.log("Bot: " + data.choices[0].message.content + "\n");
+      const data6 = await response6.json();
+      if (data6 && data6.choices && data6.choices.length > 0) {
+          console.log("Bot: " + data6.choices[0].message.content + "\n");
           message.channel.send({
-              content: data.choices[0].message.content,
+              content: data6.choices[0].message.content,
               allowedMentions: { parse: [] },
           });
       } else {
