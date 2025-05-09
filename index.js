@@ -148,9 +148,9 @@ client.on("guildMemberAdd", async (member) => {
       console.log("data2: " + data2.choices[0].message.content);
       canal.send("Prueba desde data2");
       //canal.send({
-        content: data2.choices[0].message.content,
-        allowedMentions: { parse: [] },
-      });
+      //  content: data2.choices[0].message.content,
+      //  allowedMentions: { parse: [] },
+      //});
 } else {
   console.error("La API no devolvió una respuesta válida:", response2);
   canal.send("¡Bienvenido al servidor! Pero algo salió mal al generar un mensaje automático.");
