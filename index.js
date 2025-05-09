@@ -412,11 +412,10 @@ client.on("messageCreate", async (message) => {
       const canal = client.channels.cache.get(process.env.GENERAL_ID);
       if (data6 && data6.choices && data6.choices.length > 0) {
           console.log("Data6: " + data6.choices[0].message.content + "\n");
-          //canal.send("Prueba desde data6");
-          //message.channel.send({
-          //    content: data6.choices[0].message.content,
-          //    allowedMentions: { parse: [] },
-          //});
+          message.channel.send({
+              content: data6.choices[0].message.content,
+              allowedMentions: { parse: [] },
+          });
       } else {
           console.error("Respuesta inválida de la API:", data6);
           message.reply("¡Ups! Algo salió mal al procesar tu solicitud. Por favor, intenta más tarde.");
