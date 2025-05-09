@@ -94,9 +94,9 @@ client.on("ready", () => {
         console.log("data1: " + data1.choices[0].message.content);
         canal.send("Prueba desde data1");
         //canal.send({
-          content: data1.choices[0].message.content,
-          allowedMentions: { parse: [] },
-        });
+        //  content: data1.choices[0].message.content,
+        //  allowedMentions: { parse: [] },
+        //});
       } else {
         console.error("La API no devolvió una respuesta válida:", response1);
         canal.send("¡Lo siento! Algo salió mal al procesar la solicitud.");
