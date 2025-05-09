@@ -33,6 +33,8 @@ const client = new Client({
   partials: [Partials.GuildMember],
 });
 
+let apiKey = process.env.API_KEY1;
+
 var botP =
   "RodentBot (RodentBotId: <@1197231648123654364>) es un inteligente moderador capáz de entablar una conversación natural con los integrantes del discord, es originario de México y nació el 17 de enero del 2024. Sirve como asistente leal en el animado Discord llamado RodentPlay, una bulliciosa comunidad en línea propiedad de los reconocidos streamers mexicanos AraxielFenix (<@146081383838777344>) y Maritha_F (<@718376336326131713>). El androide de confianza es una voz familiar en medio del bullicio y la charla del mundo de los videojuegos.";
 botP +=
@@ -81,7 +83,7 @@ client.on("ready", () => {
     const response1 = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${getApiKey()}`,
+        "Authorization": `Bearer ${api_key}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -122,6 +124,11 @@ client.on("ready", () => {
       else if (response1.status === 401 || response1.status === 429) {
         console.log(`Error ${response.status}: Cambiando API Key...`);
         switchApiKey();
+        if (API_KEYcurrent == 1{
+          api_key = process.env.API_KEY1;
+        }else{
+          api_key = process.env.API_KEY2;
+        }
         contador = 1; // Reintentamos con la nueva API Key
       }
     }
@@ -142,7 +149,7 @@ client.on("guildMemberAdd", async (member) => {
     const response2 = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${getApiKey()}`,
+        "Authorization": `Bearer ${api_key}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -182,6 +189,11 @@ client.on("guildMemberAdd", async (member) => {
     else if (response2status === 401 || response2.status === 429) {
       console.log(`Error ${response2.status}: Cambiando API Key...`);
       switchApiKey();
+      if (API_KEYcurrent == 1{
+          api_key = process.env.API_KEY1;
+        }else{
+          api_key = process.env.API_KEY2;
+        }
     }
 
   } catch (error) {
@@ -284,7 +296,7 @@ client.on("messageCreate", async (message) => {
       const response3 = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${getApiKey()}`,
+          "Authorization": `Bearer ${api_key}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -333,6 +345,11 @@ client.on("messageCreate", async (message) => {
       else if (response2status === 401 || response2.status === 429) {
         console.log(`Error ${response3.status}: Cambiando API Key...`);
         switchApiKey();
+        if (API_KEYcurrent == 1{
+          api_key = process.env.API_KEY1;
+        }else{
+          api_key = process.env.API_KEY2;
+        }
       }
     } else if (
       message.content.toLowerCase().includes("imagina") ||
@@ -343,7 +360,7 @@ client.on("messageCreate", async (message) => {
       const response4 = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${getApiKey()}`,
+          "Authorization": `Bearer ${api_key}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -397,13 +414,18 @@ client.on("messageCreate", async (message) => {
       } else if (response4status === 401 || response4.status === 429) {
         console.log(`Error ${response4.status}: Cambiando API Key...`);
         switchApiKey();
+        if (API_KEYcurrent == 1{
+          api_key = process.env.API_KEY1;
+        }else{
+          api_key = process.env.API_KEY2;
+        }
       }
     } else {
 
-      const response6 = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      const response5 = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${getApiKey()}`,
+          "Authorization": `Bearer ${api_key}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -430,22 +452,27 @@ client.on("messageCreate", async (message) => {
           console.log(`OPENROUTER ERR (linea 405): ${error}`);
         });
       
-      if (response6 && response6.ok) {
-        const data6 = await response6.json();
+      if (response5 && response5.ok) {
+        const data5 = await response5.json();
         const canal = client.channels.cache.get(process.env.GENERAL_ID);
-        if (data6 && data6.choices && data6.choices.length > 0) {
-          console.log("Data6: " + data6.choices[0].message.content + "\n");
+        if (data5 && data5.choices && data5.choices.length > 0) {
+          console.log("Data5: " + data5.choices[0].message.content + "\n");
           message.channel.send({
-            content: data6.choices[0].message.content,
+            content: data5.choices[0].message.content,
             allowedMentions: { parse: [] },
           });
         } else {
-          console.error("Respuesta inválida de la API:", data6);
+          console.error("Respuesta inválida de la API:", data5);
           message.reply("¡Ups! Algo salió mal al procesar tu solicitud. Por favor, intenta más tarde.");
         }
-      }else if (response4status === 401 || response4.status === 429) {
-        console.log(`Error ${response6.status}: Cambiando API Key...`);
+      }else if (response5status === 401 || response5.status === 429) {
+        console.log(`Error ${response5.status}: Cambiando API Key...`);
         switchApiKey();
+        if (API_KEYcurrent == 1{
+          api_key = process.env.API_KEY1;
+        }else{
+          api_key = process.env.API_KEY2;
+        }
       }
 
 
