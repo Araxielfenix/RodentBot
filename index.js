@@ -350,7 +350,7 @@ client.on("messageCreate", async (message) => {
                   {
                     type: "image_url",
                     image_url: {
-                      url: response4.data,
+                      url: image_url,
                     },
                   },
                 ],
@@ -363,7 +363,10 @@ client.on("messageCreate", async (message) => {
             console.log(`OPENROUTER ERR: ${error}`);
           });
 
-        message.reply(response5.choices[0].message.content);
+          const data5 = await response5.json();
+          console.log("data5: " + data5.choices[0].message.content);
+          message.reply(rdata5.choices[0].message.content);
+          //message.reply(response5.choices[0].message.content);
 
         const embed = new EmbedBuilder()
           .setImage(response4.data[0].url);
@@ -379,8 +382,6 @@ client.on("messageCreate", async (message) => {
           method: "POST",
           headers: {
             "Authorization": `Bearer ${process.env.API_KEY}`,
-            "HTTP-Referer": process.env.YOUR_SITE_URL || "", // Opcional
-            "X-Title": process.env.YOUR_SITE_NAME || "", // Opcional
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
@@ -404,7 +405,7 @@ client.on("messageCreate", async (message) => {
           }),
         })
           .catch((error) => {
-            console.log(`OPENROUTER ERR: ${error}`);
+            console.log(`OPENROUTER ERR (linea 405): ${error}`);
           });
 
       const data6 = await response6.json();
