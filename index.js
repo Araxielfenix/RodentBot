@@ -388,7 +388,7 @@ client.on("messageCreate", async (message) => {
             console.log(`OPENROUTER ERR: ${error}`);
           });
 
-        console.log("Bot: " + response6.choices + "\n");
+        console.log("Bot: " + response6.choices[0] + "\n");
 
         console.log(
           "Historial de mensajes del usuario " +
