@@ -300,25 +300,6 @@ client.on("messageCreate", async (message) => {
         message.content.toLowerCase().includes("genera") ||
         message.content.toLowerCase().includes("dibuja")
       ) {
-        const response4 = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${process.env.API_KEY}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            model: "google/gemini-2.0-flash-exp:free",
-            messages: "Historial de mensajes del usuario " +
-              message.author.username +
-              ": " +
-              JSON.stringify(contentArray, null, 2) +
-              "mensaje que debes responder: " +
-              message.content,
-          }),
-        })
-          .catch((error) => {
-            console.log(`OPENROUTER ERR: ${error}`);
-          });
         message.react("🎨");
         await message.channel.sendTyping();
         const response5 = await fetch("https://openrouter.ai/api/v1/chat/completions", {
@@ -350,7 +331,7 @@ client.on("messageCreate", async (message) => {
                   {
                     type: "image_url",
                     image_url: {
-                      url: response4.data,
+                      url: response3.data,
                     },
                   },
                 ],
