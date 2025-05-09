@@ -44,6 +44,8 @@ botP +=
 
 let timer = 0;
 
+const canal = client.channels.cache.get(process.env.GENERAL_ID);
+
 client.on("ready", () => {
   console.log("🫡A la orden pal desorden.");
   client.user.setActivity("🫡A la orden pal desorden.", {
@@ -406,6 +408,7 @@ client.on("messageCreate", async (message) => {
           });
 
       const data6 = await response6.json();
+      const canal = client.channels.cache.get(process.env.GENERAL_ID);
       if (data6 && data6.choices && data6.choices.length > 0) {
           console.log("Data6: " + data6.choices[0].message.content + "\n");
           canal.send("Prueba desde data6");
