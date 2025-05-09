@@ -1,13 +1,13 @@
 import {job} from './keep_alive.js';
 import 'dotenv/config';
 
-const {
+import {
   Client,
   GatewayIntentBits,
   ActivityType,
   Partials,
-  EmbedBuilder,
-} from "discord.js";
+  EmbedBuilder
+} from 'discord.js';
 
 module.exports = {
   data: {
@@ -43,7 +43,7 @@ const client = new Client({
     GatewayIntentBits.DirectMessageTyping,
     GatewayIntentBits.GuildScheduledEvents,
   ],
-  partials: [Partials.GuildMember],
+  partials: [Partials.GuildMember, Partials.Message, Partials.Channel, Partials.Reaction],
 });
 
 let apiKey = process.env.API_KEY1;
