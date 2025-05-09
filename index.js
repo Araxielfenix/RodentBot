@@ -64,7 +64,7 @@ client.on("ready", () => {
     const response1 = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${this.apiKey}`,
+        "Authorization": `Bearer ${process.env.API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -118,7 +118,7 @@ client.on("guildMemberAdd", async (member) => {
     const response2 = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${this.apiKey}`,
+        "Authorization": `Bearer ${process.env.API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -249,7 +249,7 @@ client.on("messageCreate", async (message) => {
       const response3 = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${this.apiKey}`,
+          "Authorization": `Bearer ${process.env.API_KEY}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -301,7 +301,7 @@ client.on("messageCreate", async (message) => {
         const response4 = await fetch("https://openrouter.ai/api/v1/chat/completions", {
           method: "POST",
           headers: {
-            "Authorization": `Bearer ${this.apiKey}`,
+            "Authorization": `Bearer ${process.env.API_KEY}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
@@ -322,7 +322,7 @@ client.on("messageCreate", async (message) => {
         const response5 = await fetch("https://openrouter.ai/api/v1/chat/completions", {
           method: "POST",
           headers: {
-            "Authorization": `Bearer ${this.apiKey}`,
+            "Authorization": `Bearer ${process.env.API_KEY}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
@@ -376,7 +376,7 @@ client.on("messageCreate", async (message) => {
         const response6 = await fetch("https://openrouter.ai/api/v1/chat/completions", {
           method: "POST",
           headers: {
-            "Authorization": `Bearer ${this.apiKey}`,
+            "Authorization": `Bearer ${process.env.API_KEY}`,
             "HTTP-Referer": process.env.YOUR_SITE_URL || "", // Opcional
             "X-Title": process.env.YOUR_SITE_NAME || "", // Opcional
             "Content-Type": "application/json",
