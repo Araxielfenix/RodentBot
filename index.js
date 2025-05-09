@@ -308,12 +308,31 @@ client.on("messageCreate", async (message) => {
         },
         body: JSON.stringify({
           model: "google/gemini-2.0-flash-exp:free",
-          messages: "Historial de mensajes del usuario " +
-            message.author.username +
-            ": " +
-            JSON.stringify(contentArray, null, 2) +
-            "mensaje que debes responder: " +
-            message.content,
+          messages: [
+            {
+              role: "assistant",
+              content: botP,
+            },
+            {
+              role: "user",
+              content: [
+                {
+                  type: "text",
+                  text:
+                    "Historial de mensajes del usuario " +
+                    message.author.username +
+                    ": " +
+                    JSON.stringify(contentArray, null, 2) +
+                    "mensaje que debes responder: " +
+                    message.content,
+                },
+                {
+                  type: "image_url",
+                  image_url: {
+                    url: imagen.url,
+                  },
+                },
+              ],
         }),
       })
       .catch((error) => {
@@ -321,7 +340,6 @@ client.on("messageCreate", async (message) => {
       });
         const data4 = await response4.json();
         console.log("Info en data4: " + JSON.stringify(data4, null, 2));
-        console.log("\nInfo en response4: " + response4.choices[0].message);
         message.react("🎨");
         await message.channel.sendTyping();
         const response5 = await fetch("https://openrouter.ai/api/v1/chat/completions", {
