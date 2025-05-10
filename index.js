@@ -353,8 +353,7 @@ client.on("messageCreate", async (message) => {
         message.react("👀");
         const data3 = await response3.json();
         console.log("Info en data3: " + JSON.stringify(data3, null, 2));
-        const image_url = response3.choices[0].message.content;
-        console.log("Bot: " + response3.choices[0].message.content + "\n");
+        const image_url = data3.url;
         message.reply(image_url);
       }
       else if (response2status === 401 || response2.status === 429) {
