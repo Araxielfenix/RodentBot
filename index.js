@@ -298,7 +298,7 @@ client.on("messageCreate", async (message) => {
     );
     console.log("Mensaje: " + message.content + "\n");
 
-    var imagen = message.attachments.first();
+    const imagen = message.attachments.first();
     if (imagen && imagen.url) {
       const response3 = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
@@ -406,6 +406,8 @@ client.on("messageCreate", async (message) => {
           console.log(`OPENROUTER ERR: ${error}`);
         });
 
+      console.log("imagen.url");
+
       if (response4 && response4.ok) {
         const data4 = await response4.json();
         console.log("Info en data4: " + JSON.stringify(data4, null, 2));
@@ -505,7 +507,7 @@ client.on("messageCreate", async (message) => {
     }
   } catch (error) {
     console.error("Error:", error);
-    message.reply("¡Ups! Algo salió mal. Intenta de nuevo más tarde.");
+    //message.reply("¡Ups! Algo salió mal. Intenta de nuevo más tarde.");
     // Eliminar la reacción
     const userReactions = message.reactions.cache.filter((reaction) =>
       reaction.users.cache.has(message.author.id),
