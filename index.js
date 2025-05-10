@@ -393,7 +393,7 @@ client.on("messageCreate", async (message) => {
                 {
                   type: "image_url",
                   image_url: {
-                    url: imagen.url,
+                    url: message.attachments.first().url,
                   },
                 },
               ],
