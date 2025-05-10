@@ -118,9 +118,10 @@ client.on("ready", () => {
         console.log(`OPENROUTER ERR: ${error}`);
       });
 
+    const data1 = await response1.json();
     if (canal) {
-      if (response1 && response1.ok) {
-        if (response1 && response1.choices && response1.choices.length > 0) {
+      if (data1 && data1.ok) {
+        if (data1.choices && data1.choices.length > 0) {
           const data1 = await response1.json();
           console.log("data1: " + data1.choices[0].message.content);
           canal.send("Prueba desde data1");
@@ -134,7 +135,7 @@ client.on("ready", () => {
           canal.send("¡Lo siento! Algo salió mal al procesar la solicitud.");
         }
       }
-      else if (response1.status === 401 || response1.status === 429) {
+      else if (data1.status === 401 || data1.status === 429) {
         console.log(`Error ${response.status}: Cambiando API Key...`);
         switchApiKey();
         if (API_KEYcurrent == 1) {
@@ -184,10 +185,10 @@ client.on("guildMemberAdd", async (member) => {
         console.log(`OPENROUTER ERR: ${error}`);
       });
 
+    const data2 = await response2.json();
     // Enviar el mensaje generado al canal de bienvenida
-    if (response2 && response2.ok) {
-      if (response2 && response2.choices && response2.choices.length > 0) {
-        const data2 = await response2.json();
+    if (data2 && data2.ok) {
+      if (data2.choices && data2.choices.length > 0) {
         console.log("data2: " + data2.choices[0].message.content);
         canal.send("Prueba desde data2");
         canal.send({
@@ -195,11 +196,11 @@ client.on("guildMemberAdd", async (member) => {
           allowedMentions: { parse: [] },
         });
       } else {
-        console.error("La API no devolvió una respuesta válida:", response2);
+        console.error("La API no devolvió una respuesta válida:", data2);
         canal.send("¡Bienvenido al servidor! Pero algo salió mal al generar un mensaje automático.");
       }
     }
-    else if (response2.status === 401 || response2.status === 429) {
+    else if (data2.status === 401 || data2.status === 429) {
       console.log(`Error ${response2.status}: Cambiando API Key...`);
       switchApiKey();
       if (API_KEYcurrent == 1) {
@@ -343,13 +344,13 @@ client.on("messageCreate", async (message) => {
           console.log(`OPENROUTER ERR: ${error}`);
         });
 
-      if (response3 && response3.ok) {
+      const data3 = await response3.json();
+      if (data3 && data3.ok) {
         message.react("👀");
-        const data3 = await response3.json();
         console.log("Info en data3: " + JSON.stringify(data3, null, 2));
         message.reply(data3.choices[0].message.content);
       }
-      else if (response3.status === 401 || response3.status === 429) {
+      else if (data3.status === 401 || data3.status === 429) {
         console.log(`Error ${response3.status}: Cambiando API Key...`);
         switchApiKey();
         if (API_KEYcurrent == 1) {
@@ -402,8 +403,8 @@ client.on("messageCreate", async (message) => {
 
       console.log("imagen.url");
 
-      if (response4 && response4.ok) {
-        const data4 = await response4.json();
+      const data4 = await response4.json();
+      if (data4 && data4.ok) {
         console.log("Info en data4: " + JSON.stringify(data4, null, 2));
         await message.channel.sendTyping();
 
@@ -414,8 +415,8 @@ client.on("messageCreate", async (message) => {
           .setImage(data4.choices[0].message.content);
         message.reply({ embeds: [embed] });
 
-      } else if (response4.status === 401 || response4.status === 429) {
-        console.log(`Error ${response4.status}: Cambiando API Key...`);
+      } else if (data4.status === 401 || data4.status === 429) {
+        console.log(`Error ${data4.status}: Cambiando API Key...`);
         switchApiKey();
         if (API_KEYcurrent == 1) {
           apiKey = process.env.API_KEY1;
@@ -455,10 +456,11 @@ client.on("messageCreate", async (message) => {
           console.log(`OPENROUTER ERR (linea 405): ${error}`);
         });
 
-      if (response5 && response5.ok) {
-        const data5 = await response5.json();
+      
+      const data5 = await response5.json();
+      if (data5 && data5.ok) {
         const canal = client.channels.cache.get(process.env.GENERAL_ID);
-        if (data5 && data5.choices && data5.choices.length > 0) {
+        if (data5.choices && data5.choices.length > 0) {
           console.log("Data5: " + data5.choices[0].message.content + "\n");
           console.log("Info en data5: " + data5.choices[0].message.content);
           message.channel.send({
@@ -469,7 +471,7 @@ client.on("messageCreate", async (message) => {
           console.error("Respuesta inválida de la API:", data5);
           message.reply("¡Ups! Algo salió mal al procesar tu solicitud. Por favor, intenta más tarde.");
         }
-      } else if (response5.status === 401 || response5.status === 429) {
+      } else if (data5.status === 401 || data5.status === 429) {
         console.log(`Error ${response5.status}: Cambiando API Key...`);
         switchApiKey();
         if (API_KEYcurrent == 1) {
