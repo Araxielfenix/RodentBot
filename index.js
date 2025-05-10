@@ -305,6 +305,7 @@ client.on("messageCreate", async (message) => {
     
     if (message.attachments.first() && message.attachments.first().url) {
       const imagen = message.attachments.first();
+      console.log(imagen.url);
       const response3 = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
         headers: {
