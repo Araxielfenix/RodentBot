@@ -303,8 +303,6 @@ client.on("messageCreate", async (message) => {
       "> \n",
     );
     
-    console.log("Mensaje: " + message.content + "\n" + "Imagen: " + message.attachments.first().url);
-    
     if (message.attachments.first() && message.attachments.first().url) {
       const imagen = message.attachments.first();
       const response3 = await fetch("https://openrouter.ai/api/v1/chat/completions", {
