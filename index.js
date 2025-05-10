@@ -97,7 +97,7 @@ client.on("ready", () => {
         model: "google/gemma-2-9b-it:free",
         messages: [
           {
-            role: "assistant",
+            role: "system",
             content: botP,
           },
           {
@@ -163,7 +163,7 @@ client.on("guildMemberAdd", async (member) => {
         model: "google/gemma-2-9b-it:free",
         messages: [
           {
-            role: "assistant",
+            role: "system",
             content: botP,
           },
           {
@@ -310,7 +310,7 @@ client.on("messageCreate", async (message) => {
           model: "google/gemini-2.0-flash-exp:free",
           messages: [
             {
-              role: "assistant",
+              role: "system",
               content: botP,
             },
             {
@@ -345,6 +345,7 @@ client.on("messageCreate", async (message) => {
       if (response3 && response3.ok) {
         console.log(imagen);
         message.react("👀");
+        console.log("Info en data4: " + response3.choices[0].message.content);
         const image_url = response3.choices[0].message.content;
         console.log("Bot: " + response3.choices[0].message.content + "\n");
         message.reply(image_url);
@@ -364,7 +365,6 @@ client.on("messageCreate", async (message) => {
       message.content.toLowerCase().includes("dibuja")
     ) {
       message.react("🎨");
-      console.log(message.attachments.first());
       const response4 = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
         headers: {
@@ -375,7 +375,7 @@ client.on("messageCreate", async (message) => {
           model: "google/gemini-2.0-flash-exp:free",
           messages: [
             {
-              role: "assistant",
+              role: "system",
               content: botP,
             },
             {
@@ -433,10 +433,10 @@ client.on("messageCreate", async (message) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "google/gemma-2-9b-it:free",
+          model: "deepseek/deepseek-chat-v3-0324:free",
           messages: [
             {
-              role: "assistant",
+              role: "system",
               content: botP,
             },
             {
@@ -461,6 +461,7 @@ client.on("messageCreate", async (message) => {
         const canal = client.channels.cache.get(process.env.GENERAL_ID);
         if (data5 && data5.choices && data5.choices.length > 0) {
           console.log("Data5: " + data5.choices[0].message.content + "\n");
+          console.log("Info en data5: " + data5.choices[0].message.content);
           message.channel.send({
             content: data5.choices[0].message.content,
             allowedMentions: { parse: [] },
