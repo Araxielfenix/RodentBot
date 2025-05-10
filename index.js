@@ -364,6 +364,7 @@ client.on("messageCreate", async (message) => {
       message.content.toLowerCase().includes("dibuja")
     ) {
       message.react("🎨");
+      console.log(message.attachments.first());
       const response4 = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
         headers: {
