@@ -349,12 +349,12 @@ client.on("messageCreate", async (message) => {
         });
 
       if (response3 && response3.ok) {
-        console.log(imagen);
+        console.log(imagen.url);
         message.react("👀");
         const data3 = await response3.json();
         console.log("Info en data3: " + JSON.stringify(data3, null, 2));
-        const image_url = data3.url;
-        message.reply(image_url);
+        const imagen = message.attachments.first();
+        message.reply(data3.choices[0].message.content);
       }
       else if (response2status === 401 || response2.status === 429) {
         console.log(`Error ${response3.status}: Cambiando API Key...`);
