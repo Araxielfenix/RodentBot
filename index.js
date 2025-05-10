@@ -351,7 +351,8 @@ client.on("messageCreate", async (message) => {
       if (response3 && response3.ok) {
         console.log(imagen);
         message.react("👀");
-        console.log("Info en data4: " + response3.choices[0].message.content);
+        const data3 = await response3.json();
+        console.log("Info en data3: " + JSON.stringify(data3, null, 2));
         const image_url = response3.choices[0].message.content;
         console.log("Bot: " + response3.choices[0].message.content + "\n");
         message.reply(image_url);
