@@ -304,8 +304,8 @@ client.on("messageCreate", async (message) => {
     );
     console.log("Mensaje: " + message.content + "\n");
 
-    const imagen = message.attachments.first();
     if (imagen && imagen.url) {
+      const imagen = message.attachments.first();
       const response3 = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
         headers: {
@@ -349,8 +349,6 @@ client.on("messageCreate", async (message) => {
         });
 
       if (response3 && response3.ok) {
-        const imagen = message.attachments.first();
-        console.log(imagen.url);
         message.react("👀");
         const data3 = await response3.json();
         console.log("Info en data3: " + JSON.stringify(data3, null, 2));
