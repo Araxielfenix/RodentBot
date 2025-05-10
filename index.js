@@ -303,7 +303,7 @@ client.on("messageCreate", async (message) => {
       "> \n",
     );
     
-    console.log("Mensaje: " + message.content + "\n");
+    console.log("Mensaje: " + message.content + "\n" + "Imagen: " + message.attachments.first().url);
     
     if (message.attachments.first() && message.attachments.first().url) {
       const imagen = message.attachments.first();
@@ -316,10 +316,6 @@ client.on("messageCreate", async (message) => {
         body: JSON.stringify({
           model: "google/gemini-2.0-flash-exp:free",
           messages: [
-            {
-              role: "system",
-              content: botP,
-            },
             {
               role: "user",
               content: [
@@ -342,7 +338,6 @@ client.on("messageCreate", async (message) => {
               ],
             },
           ],
-          max_tokens: 300,
         }),
       })
         .catch((error) => {
