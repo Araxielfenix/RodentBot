@@ -391,12 +391,6 @@ client.on("messageCreate", async (message) => {
                     "mensaje que debes responder: " +
                     message.content,
                 },
-                {
-                  type: "image_url",
-                  image_url: {
-                    url: message.attachments.first().url,
-                  },
-                },
               ],
             }
           ]
