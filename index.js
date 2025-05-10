@@ -24,6 +24,12 @@ const expressWsInstance = expressWs(app);
 // Set the view engine to ejs
 app.set('view engine', 'ejs');
 
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+    console.log(`Servidor corriendo en el puerto ${port}`);
+});
+
+
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
