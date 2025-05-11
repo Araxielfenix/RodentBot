@@ -313,7 +313,7 @@ client.on("messageCreate", async (message) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "google/gemini-2.0-flash-exp:free",
+          model: "google/gemma-3-27b-it:free",
           messages: [
             {
               role: "user",
@@ -432,7 +432,7 @@ client.on("messageCreate", async (message) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "deepseek/deepseek-chat-v3-0324:free",
+          model: "google/gemma-2-9b-it:free",
           messages: [
             {
               role: "system",
@@ -450,6 +450,7 @@ client.on("messageCreate", async (message) => {
             },
           ],
         }),
+        max_tokens: 200,
       })
         .catch((error) => {
           console.log(`OPENROUTER ERR (linea 405): ${error}`);
