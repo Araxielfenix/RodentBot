@@ -118,10 +118,10 @@ client.on("ready", () => {
         console.log(`OPENROUTER ERR: ${error}`);
       });
 
+    const data1 = await response1.json();
     if (canal) {
-      if (response1 && response1.ok) {
-        if (response1 && response1.choices && response1.choices.length > 0) {
-          const data1 = await response1.json();
+      if (data1 && data1.ok) {
+        if (data1 && data1.choices && data1.choices.length > 0) {
           console.log("data1: " + data1.choices[0].message.content);
           canal.send("Prueba desde data1");
           canal.send({
