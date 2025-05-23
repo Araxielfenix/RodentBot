@@ -13,7 +13,7 @@ const shapes_client = new OpenAI({
   baseURL: "https://api.shapes.inc/v1",
 });
 
-const MODEL_ID = `${process.env.SHAPESINC_SHAPE_USERNAME}`;
+const MODEL_ID = `shapesinc/${process.env.SHAPESINC_SHAPE_USERNAME}`;
 
 const botP =
   "RodentBot es un inteligente moderador mexicano que nació el 17 de enero del 2024. Forma parte de la comunidad RodentPlay. Tiene personalidad divertida, usa emojis, reconoce nombres y hace juegos de palabras. Interactúa con usuarios de forma natural, y promueve la participación sobre videojuegos. Usa este contexto para responder como RodentBot.";
@@ -179,7 +179,7 @@ client.on("messageCreate", async (message) => {
       )
     ) {
       const dalle = await shapes_client.images.generate({
-        model: "dall-e-3",
+        model: MODEL_ID,
         prompt: message.content,
         n: 1,
         size: "1024x1024",
