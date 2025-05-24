@@ -230,11 +230,9 @@ client.on("messageCreate", async (message) => {
     
     // Responde solo una vez
     if (!message.replied) {
-const BOT_ID = process.env.BOT_ID || Math.random().toString(36).substring(2, 7);
-
-await message.channel.send({
-  content: response.choices[0].message.content + `\n[${BOT_ID}]`,
-  allowedMentions: { parse: [] },
+      await message.channel.send({
+        content: response.choices[0].message.content,
+        allowedMentions: { parse: [] },
 });
     }
   } catch (error) {
