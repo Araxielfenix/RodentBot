@@ -197,7 +197,7 @@ client.on("messageCreate", async (message) => {
     if (
       !image &&
       !audio &&
-      ["imagina", "dibuja", "genera"].some((w) =>
+      ["!imagine"].some((w) =>
         message.content.toLowerCase().includes(w)
       )
     ) {
