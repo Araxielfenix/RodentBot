@@ -126,14 +126,18 @@ client.on("messageCreate", async (message) => {
       !message.mentions.has(client.user) &&
       !message.channel.id.includes("1094473900181704867")
     ) {
-      const keywords = ["ayuda", "buenos", "feliz cumpleaños", "f", "efe"];
+      const keywords = ["ayuda", "buenos", "feliz cumpleaños", "f", "efe", "hola", "wenas", "suicidio", "bot", "sad"];
       const contains = keywords.some((kw) =>
-        message.content.toLowerCase().includes(kw.toLowerCase())
+        message.content.toLowerCase().includes(kw.toLowerCase());
       );
       if (!contains) return;
     }
 
     await message.channel.sendTyping();
+
+    if(message.content.toLowerCase().startsWith(kw.toLowerCase()).includes("!imagine")){
+      message.react("🎨");
+    }
 
     const userId = message.author.id;
     const history = userConversations.get(userId) || [];
@@ -193,26 +197,6 @@ client.on("messageCreate", async (message) => {
         audio_url: { url: audio.url },
       });
     }
-
-if (
-  !image &&
-  !audio &&
-  ["!imagine"].some((w) =>
-    message.content.toLowerCase().includes(w)
-  )
-) {
-  // Reacciona con el emoji 🎨
-  await message.react("🎨");
-
-  // Extrae el prompt del comando (opcional, si quieres mostrarlo)
-  const prompt = message.content.slice("!imagine".length).trim();
-
-  // Agrega el contenido como texto, siguiendo tu formato
-  content.push({
-    type: "text", // o el tipo que uses para mensajes de texto
-    message: `Solicitud de imagen: ${prompt}`, // Ajusta el mensaje según prefieras
-  });
-}
 
     const response = await shapes_client.chat.completions.create({
       model: MODEL_ID,
