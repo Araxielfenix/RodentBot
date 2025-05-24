@@ -126,9 +126,9 @@ client.on("messageCreate", async (message) => {
       !message.mentions.has(client.user) &&
       !message.channel.id.includes("1094473900181704867")
     ) {
-      const keywords = ["ayuda", "buenos", "feliz cumpleaños", "f", "efe", "hola", "wenas", "suicidio", "bot", "sad"];
+      const keywords = ["ayuda", "buenos", "feliz cumpleaños", "f", "efe", "suicidio", "sad", "wenas", "hola"];
       const contains = keywords.some((kw) =>
-        message.content.toLowerCase().includes(kw.toLowerCase());
+        message.content.toLowerCase().includes(kw.toLowerCase())
       );
       if (!contains) return;
     }
