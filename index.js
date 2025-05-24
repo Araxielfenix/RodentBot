@@ -122,11 +122,25 @@ client.on("messageCreate", async (message) => {
     const ignoredChannels = process.env.CHANNEL_ID.split(",").map(id => id.trim());
     
     if (message.author.bot || message.content.startsWith("/")) return;
-    if (ignoredChannels.includes(message.channel.id)) return; // Ignora mensajes en estos canales
-    if (
-      !message.mentions.has(client.user)
-    ) {
-      const keywords = ["ayuda", "buenos", "feliz cumpleaños", "f", "efe", "suicidio", "sad", "wenas", "hola"];
+    if (ignoredChannels.includes(message.channel.id) && !message.mentions.has(client.user)) 
+    {
+      const keywords = [
+        "Ayuda",
+        "Buenos dias",
+        "Buenos días",
+        "Buenas tardes",
+        "Buenas noches",
+        "Feliz Cumpleaños",
+        "F",
+        "efe",
+        "Efisima",
+        "Efesota",
+        "nunchu2NunchuF",
+        "buenas",
+        "wenas",
+        "suicidio",
+        "help",
+      ];
       const contains = keywords.some((kw) =>
         message.content.toLowerCase().includes(kw.toLowerCase())
       );
