@@ -13,6 +13,7 @@
   "dependencies": {
     "discord.js": "^14.14.1",
     "dotenv": "^16.0.3",
+    "cron": "^2.4.0",
     "openai": "^4.24.7"
   },
   "devDependencies": {
