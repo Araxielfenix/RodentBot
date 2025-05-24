@@ -121,10 +121,11 @@ client.on("messageCreate", async (message) => {
   try {
     if (message.author.bot || message.content.startsWith("/")) return;
 
+    const ignoredChannels = process.env.CHANNEL_ID.split(",").map(id => id.trim());
+    
     if (
-      !message.channel.id.includes(process.env.CHANNEL_ID) &&
-      !message.mentions.has(client.user) &&
-      !message.channel.id.includes("1094473900181704867")
+      !ignoredChannels.includes(message.channel.id) &&
+      !message.mentions.has(client.user)
     ) {
       const keywords = ["ayuda", "buenos", "feliz cumpleaños", "f", "efe", "suicidio", "sad", "wenas", "hola"];
       const contains = keywords.some((kw) =>
