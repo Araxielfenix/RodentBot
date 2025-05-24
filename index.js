@@ -122,7 +122,7 @@ client.on("messageCreate", async (message) => {
     if (message.author.bot || message.content.startsWith("/")) return;
 
     const ignoredChannels = process.env.CHANNEL_ID.split(",").map(id => id.trim());
-    if (ignoredChannels.includes(message.channel.id)) return; // Ignora mensajes en estos canales
+    if (!ignoredChannels.includes(message.channel.id)) return; // Ignora mensajes en estos canales
     if (
       !message.mentions.has(client.user)
     ) {
