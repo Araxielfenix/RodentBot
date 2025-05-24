@@ -194,47 +194,25 @@ client.on("messageCreate", async (message) => {
       });
     }
 
-    if (
-      !image &&
-      !audio &&
-      ["!imagine"].some((w) =>
-        message.content.toLowerCase().includes(w)
-      )
-    ) {
-      const dalle = await shapes_client.images.generate({
-        model: MODEL_ID,
-        prompt: message.content,
-        n: 1,
-        size: "1024x1024",
-      });
+if (
+  !image &&
+  !audio &&
+  ["!imagine"].some((w) =>
+    message.content.toLowerCase().includes(w)
+  )
+) {
+  // Reacciona con el emoji 🎨
+  await message.react("🎨");
 
-      const imageUrl = dalle.data[0].url;
+  // Extrae el prompt del comando (opcional, si quieres mostrarlo)
+  const prompt = message.content.slice("!imagine".length).trim();
 
-      const vision = await shapes_client.chat.completions.create({
-        model: MODEL_ID,
-        messages: [
-          { role: "system", content: botP },
-          {
-            role: "user",
-            content: [
-              {
-                type: "text",
-                text: `Imagen generada con prompt de ${message.author.username}: ${message.content}`,
-              },
-              {
-                type: "image_url",
-                image_url: { url: imageUrl },
-              },
-            ],
-          },
-        ],
-        max_tokens: 300,
-      });
-
-      message.reply(vision.choices[0].message.content);
-      const embed = new EmbedBuilder().setImage(imageUrl);
-      return message.reply({ embeds: [embed] });
-    }
+  // Agrega el contenido como texto, siguiendo tu formato
+  content.push({
+    type: "text", // o el tipo que uses para mensajes de texto
+    message: `Solicitud de imagen: ${prompt}`, // Ajusta el mensaje según prefieras
+  });
+}
 
     const response = await shapes_client.chat.completions.create({
       model: MODEL_ID,
