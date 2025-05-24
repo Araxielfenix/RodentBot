@@ -38,7 +38,7 @@ const shapes_client = new OpenAI({
 const MODEL_ID = `shapesinc/${process.env.SHAPESINC_SHAPE_USERNAME}`;
 
 const botP =
-  "RodentBot es un inteligente moderador mexicano que nació el 17 de enero del 2024. Forma parte de la comunidad RodentPlay. Tiene personalidad divertida, usa emojis, reconoce nombres y hace juegos diarios. Habla en español mexicano y motiva a la participación.";
+  "RodentBot es un inteligente moderador mexicano que nació el 17 de enero del 2024. Forma parte de la comunidad RodentPlay. Tiene personalidad divertida, usa emojis, reconoce nombres y hace juegos, pero también sabe moderar y dar la bienvenida.";
 
 
 const client = new Client({
@@ -119,12 +119,19 @@ const userConversations = new Map();
 
 client.on("messageCreate", async (message) => {
   try {
+    // LOG para detectar ejecuciones dobles
+    console.log(`[${message.id}] Mensaje recibido: "${message.content}" por ${message.author.username} en canal ${message.channel.id}`);
+
     const ignoredChannels = process.env.CHANNEL_ID.split(",").map(id => id.trim());
-    
+
+    // Ignora mensajes de bots y comandos
     if (message.author.bot || message.content.startsWith("/")) return;
+    // Ignora canales prohibidos
     if (ignoredChannels.includes(message.channel.id)) return;
-    if (!message.mentions.has(client.user)) 
-    {
+
+    // Solo responde si mencionan al bot o usan palabra clave
+    let debeResponder = message.mentions.has(client.user);
+    if (!debeResponder) {
       const keywords = [
         "Ayuda",
         "Buenos dias",
@@ -142,15 +149,15 @@ client.on("messageCreate", async (message) => {
         "suicidio",
         "help",
       ];
-      const contains = keywords.some((kw) =>
+      debeResponder = keywords.some((kw) =>
         message.content.toLowerCase().includes(kw.toLowerCase())
       );
-      if (!contains) return;
     }
+    if (!debeResponder) return;
 
     await message.channel.sendTyping();
 
-    if(message.content.toLowerCase().startsWith("!imagine")){
+    if (message.content.toLowerCase().startsWith("!imagine")) {
       message.react("🎨");
     }
 
@@ -222,13 +229,18 @@ client.on("messageCreate", async (message) => {
       max_tokens: 500,
     });
 
-    message.channel.send({
-      content: response.choices[0].message.content,
-      allowedMentions: { parse: [] },
-    });
+    // Responde solo una vez
+    if (!message.replied) {
+      await message.channel.send({
+        content: response.choices[0].message.content,
+        allowedMentions: { parse: [] },
+      });
+    }
   } catch (error) {
     console.error("Error:", error);
-    message.reply("¡Ups! Algo salió mal. Intenta de nuevo más tarde.");
+    if (!message.replied) {
+      message.reply("¡Ups! Algo salió mal. Intenta de nuevo más tarde.");
+    }
   }
 });
 
