@@ -135,7 +135,7 @@ client.on("messageCreate", async (message) => {
 
     await message.channel.sendTyping();
 
-    if(message.content.toLowerCase().startsWith("!imagine"){
+    if(message.content.toLowerCase().startsWith("!imagine")){
       message.react("🎨");
     }
 
