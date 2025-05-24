@@ -227,7 +227,9 @@ client.on("messageCreate", async (message) => {
       ],
       max_tokens: 500,
     });
-
+    
+    console.log("Choices recibidas:", response.choices.length, response.choices.map(c => c.message.content));
+    
     // Responde solo una vez
     if (!message.replied) {
       await message.channel.send({
