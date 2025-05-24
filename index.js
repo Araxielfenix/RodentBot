@@ -120,12 +120,11 @@ const userConversations = new Map();
 client.on("messageCreate", async (message) => {
   try {
     // LOG para detectar ejecuciones dobles
-    console.log(`[${message.id}] Mensaje recibido: "${message.content}" por ${message.author.username} en canal ${message.channel.id}`);
-
+    console.log(`[${message.id}] Mensaje recibido: "${message.content}" por ${message.author.username} (${message.author.id}) en canal ${message.channel.id}`);
     const ignoredChannels = process.env.CHANNEL_ID.split(",").map(id => id.trim());
 
     // Ignora mensajes de bots y comandos
-    if (message.author.bot || message.content.startsWith("/")) return;
+    if (message.author.bot || message.content.startsWith("/") || message.author.id === client.user.id) return;
     // Ignora canales prohibidos
     if (ignoredChannels.includes(message.channel.id)) return;
 
