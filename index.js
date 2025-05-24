@@ -228,14 +228,14 @@ client.on("messageCreate", async (message) => {
       max_tokens: 500,
     });
     
-    console.log("Choices recibidas:", response.choices.length, response.choices.map(c => c.message.content));
-    
     // Responde solo una vez
     if (!message.replied) {
-      await message.channel.send({
-        content: response.choices[0].message.content,
-        allowedMentions: { parse: [] },
-      });
+const BOT_ID = process.env.BOT_ID || Math.random().toString(36).substring(2, 7);
+
+await message.channel.send({
+  content: response.choices[0].message.content + `\n[${BOT_ID}]`,
+  allowedMentions: { parse: [] },
+});
     }
   } catch (error) {
     console.error("Error:", error);
