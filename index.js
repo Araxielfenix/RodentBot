@@ -122,7 +122,8 @@ client.on("messageCreate", async (message) => {
     const ignoredChannels = process.env.CHANNEL_ID.split(",").map(id => id.trim());
     
     if (message.author.bot || message.content.startsWith("/")) return;
-    if (ignoredChannels.includes(message.channel.id) && !message.mentions.has(client.user)) 
+    if (ignoredChannels.includes(message.channel.id)) return;
+    if (!message.mentions.has(client.user)) 
     {
       const keywords = [
         "Ayuda",
