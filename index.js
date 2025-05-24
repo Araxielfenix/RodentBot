@@ -1,4 +1,6 @@
 require("dotenv/config");
+const { CronJob } = require('cron');
+const https = require('https');
 const {
   Client,
   GatewayIntentBits,
@@ -8,6 +10,26 @@ const {
 } = require("discord.js");
 const { OpenAI } = require("openai");
 
+// === BLOQUE KEEP ALIVE PARA RENDER ===
+const render_url = process.env.RENDER_EXTERNAL_URL;
+if (!render_url) {
+  console.log("No RENDER_EXTERNAL_URL found. Please set it as environment variable.");
+}
+const job = new CronJob('*/14 * * * *', function () {
+  console.log('Making keep alive call');
+  https.get(render_url, (resp) => {
+    if (resp.statusCode === 200) {
+      console.log("Keep alive call successful");
+    } else {
+      console.log("Keep alive call failed");
+    }
+  }).on("error", (err) => {
+    console.log("Error making keep alive call");
+  });
+});
+job.start();
+// === FIN BLOQUE KEEP ALIVE ===
+
 const shapes_client = new OpenAI({
   apiKey: process.env.SHAPES_API_KEY,
   baseURL: "https://api.shapes.inc/v1",
@@ -16,7 +38,8 @@ const shapes_client = new OpenAI({
 const MODEL_ID = `shapesinc/${process.env.SHAPESINC_SHAPE_USERNAME}`;
 
 const botP =
-  "RodentBot es un inteligente moderador mexicano que nació el 17 de enero del 2024. Forma parte de la comunidad RodentPlay. Tiene personalidad divertida, usa emojis, reconoce nombres y hace juegos de palabras. Interactúa con usuarios de forma natural, y promueve la participación sobre videojuegos. Usa este contexto para responder como RodentBot.";
+  "RodentBot es un inteligente moderador mexicano que nació el 17 de enero del 2024. Forma parte de la comunidad RodentPlay. Tiene personalidad divertida, usa emojis, reconoce nombres y hace juegos diarios. Habla en español mexicano y motiva a la participación.";
+
 
 const client = new Client({
   intents: [
@@ -64,7 +87,7 @@ client.on("ready", () => {
       content: response.choices[0].message.content,
       allowedMentions: { parse: [] },
     });
-  }, 21600000);
+  }, 21600000); // cada 6 horas
 });
 
 client.on("guildMemberAdd", async (member) => {
