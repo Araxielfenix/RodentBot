@@ -9,7 +9,7 @@ const {
   EmbedBuilder,
 } = require("discord.js");
 const { OpenAI } = require("openai");
-
+ 
 // === BLOQUE KEEP ALIVE PARA RENDER ===
 const render_url = process.env.RENDER_EXTERNAL_URL;
 if (!render_url) {
