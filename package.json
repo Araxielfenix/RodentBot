@@ -3,7 +3,6 @@
   "version": "2.0.0",
   "description": "",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js"
@@ -14,7 +13,7 @@
   "dependencies": {
     "discord.js": "^14.14.1",
     "dotenv": "^16.0.3",
-    "cron": "^3.1.1",
+    "cron": "^2.4.0",
     "openai": "^4.24.7"
   },
   "devDependencies": {
