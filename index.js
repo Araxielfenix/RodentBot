@@ -1,22 +1,41 @@
-import dotenv from "dotenv";
-dotenv.config();
-import { CronJob } from 'cron';
-import https from 'https';
-import {
+require("dotenv/config");
+const { CronJob } = require('cron');
+const https = require('https');
+const {
   Client,
   GatewayIntentBits,
   ActivityType,
   Partials,
   EmbedBuilder,
-} from "discord.js";
-import { OpenAI } from "openai";
+} = require("discord.js");
+const { OpenAI } = require("openai");
+ 
+// === BLOQUE KEEP ALIVE PARA RENDER ===
+const render_url = process.env.RENDER_EXTERNAL_URL;
+if (!render_url) {
+  console.log("No RENDER_EXTERNAL_URL found. Please set it as environment variable.");
+}
+const job = new CronJob('*/14 * * * *', function () {
+  console.log('Making keep alive call');
+  https.get(render_url, (resp) => {
+    if (resp.statusCode === 200) {
+      console.log("Keep alive call successful");
+    } else {
+      console.log("Keep alive call failed");
+    }
+  }).on("error", (err) => {
+    console.log("Error making keep alive call");
+  });
+});
+job.start();
+// === FIN BLOQUE KEEP ALIVE ===
 
 const shapes_client = new OpenAI({
   apiKey: process.env.SHAPES_API_KEY,
   baseURL: "https://api.shapes.inc/v1",
 });
 
-const MODEL_ID = process.env.MODEL_NAME;
+const MODEL_ID = `shapesinc/${process.env.SHAPESINC_SHAPE_USERNAME}`;
 
 const botP =
   "RodentBot es un inteligente moderador mexicano que nació el 17 de enero del 2024. Forma parte de la comunidad RodentPlay. Tiene personalidad divertida, usa emojis, reconoce nombres y hace juegos, pero también sabe moderar y dar la bienvenida.";
