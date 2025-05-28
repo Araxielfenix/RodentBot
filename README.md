@@ -1,45 +1,18 @@
-# gpt-4-vision-preview and dall-e-3 Chat Bot
+# RodentBot
 
-This is a simple Discord chat bot built using discord.js and the gpt-4-vision-preview and dall-e-3 model from Open AI. This is the same model used for the popular chatbot Chat GPT.
+RodentBot es un bot para Discord que permite interactuar con múltiples proveedores de inteligencia artificial, incluyendo OpenAI, OpenRouter y Shapes Inc. Con este bot puedes mantener conversaciones avanzadas, generar imágenes y aprovechar distintas capacidades según el modelo de IA que elijas.
 
-A full video tutorial for this chat bot can be found [here](https://youtu.be/CB76_GDrPsE)
+## Características
 
-## How to setup
+- Respuestas automáticas utilizando OpenAI, OpenRouter y Shapes Ins.
+- Generación de imágenes y contenidos multimedia (según el modelo seleccionado).
+- Configuración sencilla mediante archivo `.env`.
+- Soporte para comandos de Discord a través de discord.js.
+- Fácil instalación y despliegue.
 
-1. Clone the repository to the current directory
+## Instalación
 
-```powershell
-git clone https://github.com/Araxielfenix/RodentBot.git .
-```
+1. Clona el repositorio en tu directorio actual:
 
-2. Install all the dependencies
-
-- Using npm
-```powershell
-npm install
-```
-
-- Using yarn
-```powershell
-yarn
-```
-
-3. Create a new file called `.env` and copy the format from `.env.example` (or you can just rename `.env.example`)
-   TOKEN = 
-   API_KEY = 
-  CHANNEL_ID = 
-  GUILD_ID = 
-
-5. Update `.env` with your own credentials.
-
-6. Start your bot
-
-- Using npm
-```powershell
-npm run start
-```
-
-- Using yarn
-```powershell
-yarn start
-```
+   ```bash
+   git clone https://github.com/Araxielfenix/RodentBot.git .
